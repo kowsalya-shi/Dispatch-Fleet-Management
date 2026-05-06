@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Order Counts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Order Management Dashboard Test</h2>
+        
+        <div class="alert alert-info">
+            <h5>Current Sample Data:</h5>
+            <ul>
+                <li>ORD001 - ABC Corporation - Status: pending - Priority: urgent</li>
+                <li>ORD002 - XYZ Industries - Status: processing - Priority: high</li>
+                <li>ORD003 - PQR Logistics - Status: completed - Priority: normal</li>
+            </ul>
+            <p><strong>Expected Counts:</strong></p>
+            <ul>
+                <li>Total Orders: 3</li>
+                <li>Pending Orders: 1</li>
+                <li>Completed Orders: 1</li>
+                <li>Urgent Orders: 1</li>
+            </ul>
+        </div>
+        
+        <!-- Order Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 id="totalOrdersCount">0</h4>
+                                <p class="mb-0">Total Orders</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-shopping-cart fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 id="pendingOrdersCount">0</h4>
+                                <p class="mb-0">Pending Orders</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 id="completedOrdersCount">0</h4>
+                                <p class="mb-0">Completed Orders</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 id="urgentOrdersCount">0</h4>
+                                <p class="mb-0">Urgent Orders</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Test Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-primary" onclick="testUpdateCounts()">Update Counts</button>
+                        <button class="btn btn-success" onclick="testAddOrder()">Add Test Order</button>
+                        <button class="btn btn-warning" onclick="testProcessOrder()">Process First Order</button>
+                        <button class="btn btn-info" onclick="testCompleteOrder()">Complete First Order</button>
+                        <button class="btn btn-secondary" onclick="showCurrentData()">Show Current Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Test Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="testResults">
+                            <p>Click "Update Counts" to test the order counting functionality.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for testing
+        const sampleData = {
+            orders: [
+                { 
+                    id: 'ORD001', 
+                    customer: 'ABC Corporation', 
+                    material: 'Steel Rods',
+                    priority: 'urgent', 
+                    status: 'pending'
+                },
+                { 
+                    id: 'ORD002', 
+                    customer: 'XYZ Industries', 
+                    material: 'Cement Bags',
+                    priority: 'high', 
+                    status: 'processing'
+                },
+                { 
+                    id: 'ORD003', 
+                    customer: 'PQR Logistics', 
+                    material: 'Electrical Cables',
+                    priority: 'normal', 
+                    status: 'completed'
+                }
+            ]
+        };
+        
+        function updateOrderCounts() {
+            const totalOrders = sampleData.orders.length;
+            const pendingOrders = sampleData.orders.filter(order => order.status === 'pending').length;
+            const completedOrders = sampleData.orders.filter(order => order.status === 'completed').length;
+            const urgentOrders = sampleData.orders.filter(order => order.priority === 'urgent').length;
+            
+            // Update Order Management section counts
+            const totalOrdersEl = document.getElementById('totalOrdersCount');
+            const pendingOrdersEl = document.getElementById('pendingOrdersCount');
+            const completedOrdersEl = document.getElementById('completedOrdersCount');
+            const urgentOrdersEl = document.getElementById('urgentOrdersCount');
+            
+            if (totalOrdersEl) totalOrdersEl.textContent = totalOrders;
+            if (pendingOrdersEl) pendingOrdersEl.textContent = pendingOrders;
+            if (completedOrdersEl) completedOrdersEl.textContent = completedOrders;
+            if (urgentOrdersEl) urgentOrdersEl.textContent = urgentOrders;
+            
+            return { totalOrders, pendingOrders, completedOrders, urgentOrders };
+        }
+        
+        function testUpdateCounts() {
+            const counts = updateOrderCounts();
+            document.getElementById('testResults').innerHTML = `
+                <div class="alert alert-success">
+                    <h6>Order Counts Updated:</h6>
+                    <ul>
+                        <li>Total Orders: ${counts.totalOrders}</li>
+                        <li>Pending Orders: ${counts.pendingOrders}</li>
+                        <li>Completed Orders: ${counts.completedOrders}</li>
+                        <li>Urgent Orders: ${counts.urgentOrders}</li>
+                    </ul>
+                </div>
+            `;
+        }
+        
+        function testAddOrder() {
+            const newOrder = {
+                id: 'ORD' + String(Date.now()).slice(-3),
+                customer: 'Test Customer',
+                material: 'Test Material',
+                priority: 'urgent',
+                status: 'pending'
+            };
+            
+            sampleData.orders.push(newOrder);
+            const counts = updateOrderCounts();
+            
+            document.getElementById('testResults').innerHTML = `
+                <div class="alert alert-info">
+                    <h6>Added New Order: ${newOrder.id}</h6>
+                    <p>Updated Counts:</p>
+                    <ul>
+                        <li>Total Orders: ${counts.totalOrders}</li>
+                        <li>Pending Orders: ${counts.pendingOrders}</li>
+                        <li>Urgent Orders: ${counts.urgentOrders}</li>
+                    </ul>
+                </div>
+            `;
+        }
+        
+        function testProcessOrder() {
+            const pendingOrder = sampleData.orders.find(order => order.status === 'pending');
+            if (pendingOrder) {
+                pendingOrder.status = 'processing';
+                const counts = updateOrderCounts();
+                
+                document.getElementById('testResults').innerHTML = `
+                    <div class="alert alert-warning">
+                        <h6>Processed Order: ${pendingOrder.id}</h6>
+                        <p>Status changed from 'pending' to 'processing'</p>
+                        <p>Updated Counts:</p>
+                        <ul>
+                            <li>Pending Orders: ${counts.pendingOrders}</li>
+                            <li>Processing Orders: ${sampleData.orders.filter(o => o.status === 'processing').length}</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                document.getElementById('testResults').innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>No pending orders to process!</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function testCompleteOrder() {
+            const processingOrder = sampleData.orders.find(order => order.status === 'processing');
+            if (processingOrder) {
+                processingOrder.status = 'completed';
+                const counts = updateOrderCounts();
+                
+                document.getElementById('testResults').innerHTML = `
+                    <div class="alert alert-success">
+                        <h6>Completed Order: ${processingOrder.id}</h6>
+                        <p>Status changed to 'completed'</p>
+                        <p>Updated Counts:</p>
+                        <ul>
+                            <li>Completed Orders: ${counts.completedOrders}</li>
+                            <li>Processing Orders: ${sampleData.orders.filter(o => o.status === 'processing').length}</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                document.getElementById('testResults').innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>No processing orders to complete!</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function showCurrentData() {
+            const ordersByStatus = {
+                pending: sampleData.orders.filter(o => o.status === 'pending'),
+                processing: sampleData.orders.filter(o => o.status === 'processing'),
+                completed: sampleData.orders.filter(o => o.status === 'completed')
+            };
+            
+            document.getElementById('testResults').innerHTML = `
+                <div class="alert alert-info">
+                    <h6>Current Order Data:</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Pending (${ordersByStatus.pending.length}):</strong>
+                            <ul>
+                                ${ordersByStatus.pending.map(o => `<li>${o.id} - ${o.customer}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Processing (${ordersByStatus.processing.length}):</strong>
+                            <ul>
+                                ${ordersByStatus.processing.map(o => `<li>${o.id} - ${o.customer}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Completed (${ordersByStatus.completed.length}):</strong>
+                            <ul>
+                                ${ordersByStatus.completed.map(o => `<li>${o.id} - ${o.customer}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Initialize counts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            testUpdateCounts();
+        });
+    </script>
+</body>
+</html>

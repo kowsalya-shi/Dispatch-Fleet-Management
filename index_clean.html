@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js for Dashboard Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet JS for Maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry,places&callback=initGoogleMapsAPI"></script>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4 class="mb-0 ms-3"><i class="fas fa-truck"></i> Fleet Management System</h4>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="me-3">
+                    <i class="fas fa-bell"></i> 
+                    <span class="badge bg-danger">3</span> Notifications
+                </span>
+                <div class="me-2">
+                    <button class="btn btn-info btn-sm" onclick="openMobileApp()" title="Mobile Application">
+                        <i class="fas fa-mobile-alt"></i> Mobile App
+                    </button>
+                </div>
+                <div class="me-2">
+                    <button class="btn btn-success btn-sm" onclick="openWhatsAppPanel()" title="WhatsApp Integration">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                </div>
+                <div class="me-2">
+                    <button class="btn btn-primary btn-sm" onclick="openEmailPanel()" title="Email Integration">
+                        <i class="fas fa-envelope"></i> Email
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h5><i class="fas fa-truck"></i> Fleet Manager</h5>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#vehicles" onclick="showSection('vehicles')">
+                    <i class="fas fa-truck"></i> Vehicles 
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#drivers" onclick="showSection('drivers')">
+                    <i class="fas fa-user-tie"></i> Drivers 
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#routes" onclick="showSection('routes')">
+                    <i class="fas fa-map-marked-alt"></i> Route Master 🗺️
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#trips" onclick="showSection('trips')">
+                    <i class="fas fa-route"></i> Trips 
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#warehouse" onclick="showSection('warehouse')">
+                    <i class="fas fa-warehouse"></i> Warehouse Management 
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="openDynamicDispatch()">
+                    <i class="fas fa-external-link-alt"></i> Dispatch App
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#tracking" onclick="showSection('tracking')">
+                    <i class="fas fa-map-marker-alt"></i> GPS Tracking
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#reports" onclick="showSection('reports')">
+                    <i class="fas fa-chart-bar"></i> Reports & Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#documents" onclick="showSection('documents')">
+                    <i class="fas fa-file-alt"></i> Document Management 
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#users" onclick="showSection('users')">
+                    <i class="fas fa-users-cog"></i> User Management 👥
+                </a>
+            </li>
+            
+            <!-- Alert Notifications Section -->
+            <li class="nav-item">
+                <a class="nav-link" href="#alerts" onclick="showSection('alerts')">
+                    <i class="fas fa-bell"></i> Alert Notifications
+                </a>
+            </li>
+        </ul>
+        
+        <!-- User Profile Section at Bottom -->
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-user-circle fa-2x text-white me-2"></i>
+                    <div>
+                        <strong class="text-white">Admin User</strong><br>
+                        <small class="text-light">Administrator</small>
+                    </div>
+                </div>
+                <button class="btn btn-outline-light btn-sm w-100" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-tachometer-alt"></i> Fleet Dashboard</h2>
+                </div>
+            </div>
+            
+            <!-- KPI Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="totalVehicles">5</h4>
+                                    <p class="mb-0">Total Vehicles</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-truck fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="activeFleetTrips">1</h4>
+                                    <p class="mb-0">Active Fleet Trips</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-route fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="availableDrivers">3</h4>
+                                    <p class="mb-0">Available Drivers</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-user-tie fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="totalRoutes">5</h4>
+                                    <p class="mb-0">Total Routes</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-map-marked-alt fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-list"></i> Recent Fleet Activities</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentActivities">
+                                <div class="activity-item mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-truck text-primary me-3"></i>
+                                        <div>
+                                            <strong>Vehicle TN01AB1234 completed maintenance</strong><br>
+                                            <small class="text-muted">2 hours ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-item mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-tie text-success me-3"></i>
+                                        <div>
+                                            <strong>Driver John Doe assigned to TN01AB1234</strong><br>
+                                            <small class="text-muted">4 hours ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-item mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-route text-info me-3"></i>
+                                        <div>
+                                            <strong>New route CHN-BLR-001 created</strong><br>
+                                            <small class="text-muted">6 hours ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Fleet Alerts</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="alertsList">
+                                <div class="alert alert-warning mb-2">
+                                    <small><i class="fas fa-exclamation-triangle"></i> Vehicle TN03EF9012 insurance expires in 15 days</small>
+                                </div>
+                                <div class="alert alert-danger mb-2">
+                                    <small><i class="fas fa-times-circle"></i> Driver Robert Brown license expired</small>
+                                </div>
+                                <div class="alert alert-info mb-0">
+                                    <small><i class="fas fa-info-circle"></i> 3 vehicles available for assignment</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicles Section -->
+        <div id="vehicles" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-truck"></i> Vehicle Management 🚗</h2>
+                </div>
+            </div>
+
+            <!-- Vehicle Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>5</h4>
+                                    <p class="mb-0">Total Vehicles</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-truck fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>3</h4>
+                                    <p class="mb-0">Available</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>1</h4>
+                                    <p class="mb-0">Maintenance</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-wrench fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>1</h4>
+                                    <p class="mb-0">Out of Service</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-times-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Vehicle Button -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-plus"></i> Vehicle Management</h5>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVehicleModal" onclick="resetVehicleModal()">
+                                <i class="fas fa-plus"></i> Add New Vehicle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Master Table -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-list"></i> Vehicle Master</h5>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="exportVehicles()">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="refreshVehicles()">
+                                    <i class="fas fa-sync"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Vehicle Number ✔</th>
+                                            <th>Type ✔</th>
+                                            <th>Capacity ✔</th>
+                                            <th>Insurance Details ✔</th>
+                                            <th>Status ✔</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="vehicleTable">
+                                        <tr>
+                                            <td><strong>TN01AB1234</strong></td>
+                                            <td><span class="badge bg-primary">Truck</span></td>
+                                            <td>5000 kg</td>
+                                            <td>
+                                                <small>
+                                                    <strong>Policy:</strong> INS123456789<br>
+                                                    <strong>Provider:</strong> HDFC ERGO<br>
+                                                    <strong>Expires:</strong> 2024-12-31
+                                                </small>
+                                            </td>
+                                            <td><span class="badge bg-success">Available</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="editVehicle('TN01AB1234')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info" onclick="viewVehicle('TN01AB1234')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('TN01AB1234')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TN02CD5678</strong></td>
+                                            <td><span class="badge bg-info">Van</span></td>
+                                            <td>2000 kg</td>
+                                            <td>
+                                                <small>
+                                                    <strong>Policy:</strong> INS987654321<br>
+                                                    <strong>Provider:</strong> ICICI Lombard<br>
+                                                    <strong>Expires:</strong> 2024-10-15
+                                                </small>
+                                            </td>
+                                            <td><span class="badge bg-success">Available</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="editVehicle('TN02CD5678')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info" onclick="viewVehicle('TN02CD5678')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('TN02CD5678')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TN03EF9012</strong></td>
+                                            <td><span class="badge bg-primary">Truck</span></td>
+                                            <td>8000 kg</td>
+                                            <td>
+                                                <small>
+                                                    <strong>Policy:</strong> INS456789123<br>
+                                                    <strong>Provider:</strong> Bajaj Allianz<br>
+                                                    <strong>Expires:</strong> <span class="text-warning">2024-04-20</span>
+                                                </small>
+                                            </td>
+                                            <td><span class="badge bg-warning">Maintenance</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="editVehicle('TN03EF9012')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info" onclick="viewVehicle('TN03EF9012')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('TN03EF9012')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TN04GH3456</strong></td>
+                                            <td><span class="badge bg-secondary">Car</span></td>
+                                            <td>5 passengers</td>
+                                            <td>
+                                                <small>
+                                                    <strong>Policy:</strong> INS789123456<br>
+                                                    <strong>Provider:</strong> Tata AIG<br>
+                                                    <strong>Expires:</strong> 2025-01-15
+                                                </small>
+                                            </td>
+                                            <td><span class="badge bg-success">Available</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="editVehicle('TN04GH3456')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info" onclick="viewVehicle('TN04GH3456')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('TN04GH3456')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TN05IJ7890</strong></td>
+                                            <td><span class="badge bg-warning">Bus</span></td>
+                                            <td>45 passengers</td>
+                                            <td>
+                                                <small>
+                                                    <strong>Policy:</strong> <span class="text-danger">INS321654987</span><br>
+                                                    <strong>Provider:</strong> New India Assurance<br>
+                                                    <strong>Expires:</strong> <span class="text-danger">2024-03-25</span>
+                                                </small>
+                                            </td>
+                                            <td><span class="badge bg-danger">Out of Service</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="editVehicle('TN05IJ7890')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info" onclick="viewVehicle('TN05IJ7890')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('TN05IJ7890')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Drivers Section -->
+        <div id="drivers" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-user-tie"></i> Driver Management 👨‍💼</h2>
+                </div>
+            </div>
+
+            <!-- Driver Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>5</h4>
+                                    <p class="mb-0">Total Drivers</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-user-tie fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>3</h4>
+                                    <p class="mb-0">Available</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>1</h4>
+                                    <p class="mb-0">On Duty</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>1</h4>
+                                    <p class="mb-0">Suspended</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-ban fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>

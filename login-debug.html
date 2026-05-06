@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Debug - Fleet Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .debug-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3AAFA9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2B7A78;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .credentials {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h1>🚛 Fleet Management Login</h1>
+        <p><strong>Debug Version - Enhanced Error Handling</strong></p>
+        
+        <div class="credentials">
+            <strong>Valid Credentials:</strong><br>
+            User ID: CRMAI@23<br>
+            Password: AI0023
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="userId">User ID:</label>
+                <input type="text" id="userId" name="userId" value="CRMAI@23" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="AI0023" required>
+            </div>
+            
+            <button type="submit" id="loginBtn">Login to Fleet System</button>
+        </form>
+        
+        <div id="messageArea"></div>
+        
+        <div style="margin-top: 20px; font-size: 12px; color: #666;">
+            <strong>Debug Info:</strong><br>
+            <div id="debugInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Login Debug Page Loaded');
+        
+        // Valid credentials
+        const VALID_USER_ID = 'CRMAI@23';
+        const VALID_PASSWORD = 'AI0023';
+
+        // Get elements
+        const loginForm = document.getElementById('loginForm');
+        const userIdInput = document.getElementById('userId');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const messageArea = document.getElementById('messageArea');
+        const debugInfo = document.getElementById('debugInfo');
+
+        function showMessage(text, type = 'info') {
+            messageArea.innerHTML = `<div class="message ${type}">${text}</div>`;
+            console.log(`${type.toUpperCase()}: ${text}`);
+        }
+
+        function updateDebugInfo() {
+            const currentSession = {
+                isLoggedIn: localStorage.getItem('isLoggedIn'),
+                userId: localStorage.getItem('userId'),
+                loginTime: localStorage.getItem('loginTime')
+            };
+            
+            debugInfo.innerHTML = `
+                Current Session: ${JSON.stringify(currentSession, null, 2)}<br>
+                Current URL: ${window.location.href}<br>
+                Timestamp: ${new Date().toLocaleString()}
+            `;
+        }
+
+        // Handle form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Login form submitted');
+            
+            const userId = userIdInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            console.log('Attempting login with:', { userId, password: '***' });
+            
+            // Clear previous messages
+            messageArea.innerHTML = '';
+            
+            // Disable button
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            
+            showMessage('Validating credentials...', 'info');
+            
+            // Validate credentials
+            setTimeout(() => {
+                try {
+                    if (userId === VALID_USER_ID && password === VALID_PASSWORD) {
+                        console.log('Credentials valid, setting session...');
+                        
+                        // Set session data
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('userId', userId);
+                        localStorage.setItem('loginTime', new Date().toISOString());
+                        
+                        console.log('Session data set:', {
+                            isLoggedIn: localStorage.getItem('isLoggedIn'),
+                            userId: localStorage.getItem('userId'),
+                            loginTime: localStorage.getItem('loginTime')
+                        });
+                        
+                        showMessage('✅ Login successful! Redirecting to Fleet Management System...', 'success');
+                        
+                        // Redirect after short delay
+                        setTimeout(() => {
+                            console.log('Redirecting to index.html...');
+                            window.location.href = 'index.html';
+                        }, 2000);
+                        
+                    } else {
+                        console.log('Invalid credentials provided');
+                        showMessage('❌ Invalid User ID or Password. Please check your credentials.', 'error');
+                        
+                        // Reset form
+                        loginBtn.disabled = false;
+                        loginBtn.textContent = 'Login to Fleet System';
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showMessage('❌ Login error: ' + error.message, 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login to Fleet System';
+                }
+                
+                updateDebugInfo();
+            }, 1000);
+        });
+
+        // Check existing session on load
+        window.addEventListener('load', function() {
+            console.log('Page loaded, checking existing session...');
+            updateDebugInfo();
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const loginTime = localStorage.getItem('loginTime');
+            
+            if (isLoggedIn === 'true' && loginTime) {
+                const loginDate = new Date(loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginDate) / (1000 * 60 * 60);
+                
+                if (hoursDiff < 8) {
+                    showMessage(`Already logged in. Session expires in ${(8 - hoursDiff).toFixed(1)} hours.`, 'info');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                } else {
+                    console.log('Session expired, clearing...');
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('loginTime');
+                    showMessage('Previous session expired. Please login again.', 'info');
+                }
+            }
+            
+            // Focus on first input
+            userIdInput.focus();
+        });
+
+        // Enter key navigation
+        userIdInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                passwordInput.focus();
+            }
+        });
+
+        console.log('Login debug script initialized');
+    </script>
+</body>
+</html>

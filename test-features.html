@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Features</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="new-features-styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Feature Test Page</h1>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <button class="btn btn-primary me-2" onclick="testMaterialManagement()">Test Material Management</button>
+                <button class="btn btn-success me-2" onclick="testThinSheet()">Test Thin Sheet</button>
+                <button class="btn btn-warning me-2" onclick="testLocationStorage()">Test Location Storage</button>
+                <button class="btn btn-info me-2" onclick="testPickingList()">Test Picking List</button>
+                <button class="btn btn-danger me-2" onclick="testFuelEfficiency()">Test Fuel Efficiency</button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div id="testResults" class="alert alert-info">
+                    <h5>Test Results:</h5>
+                    <pre id="resultsText">Click a button to test...</pre>
+                </div>
+            </div>
+        </div>
+        <div id="mainContent"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="material-management-system.js"></script>
+    <script src="thin-sheet-handling.js"></script>
+    <script src="location-storage.js"></script>
+    <script src="picking-list.js"></script>
+    <script src="fuel-efficiency.js"></script>
+
+    <script>
+        function updateResults(text) {
+            document.getElementById('resultsText').textContent = text;
+        }
+
+        function testMaterialManagement() {
+            updateResults('Testing Material Management...\n');
+            try {
+                if (typeof initializeMaterialManagementSystem === 'function') {
+                    initializeMaterialManagementSystem();
+                    const section = document.getElementById('materialManagementSection');
+                    if (section) {
+                        section.style.display = 'block';
+                        updateResults('✅ Material Management initialized successfully!\nSection found: ' + section.id);
+                    } else {
+                        updateResults('❌ Material Management section not found!');
+                    }
+                } else {
+                    updateResults('❌ initializeMaterialManagementSystem function not found!');
+                }
+            } catch (error) {
+                updateResults('❌ Error: ' + error.message);
+            }
+        }
+
+        function testThinSheet() {
+            updateResults('Testing Thin Sheet Handling...\n');
+            try {
+                if (typeof initializeThinSheetHandling === 'function') {
+                    initializeThinSheetHandling();
+                    const section = document.getElementById('thinSheetHandlingSection');
+                    if (section) {
+                        section.style.display = 'block';
+                        updateResults('✅ Thin Sheet Handling initialized successfully!\nSection found: ' + section.id);
+                    } else {
+                        updateResults('❌ Thin Sheet Handling section not found!');
+                    }
+                } else {
+                    updateResults('❌ initializeThinSheetHandling function not found!');
+                }
+            } catch (error) {
+                updateResults('❌ Error: ' + error.message);
+            }
+        }
+
+        function testLocationStorage() {
+            updateResults('Testing Location Storage...\n');
+            try {
+                if (typeof initializeLocationStorage === 'function') {
+                    initializeLocationStorage();
+                    const section = document.getElementById('locationStorageSection');
+                    if (section) {
+                        section.style.display = 'block';
+                        updateResults('✅ Location Storage initialized successfully!\nSection found: ' + section.id);
+                    } else {
+                        updateResults('❌ Location Storage section not found!');
+                    }
+                } else {
+                    updateResults('❌ initializeLocationStorage function not found!');
+                }
+            } catch (error) {
+                updateResults('❌ Error: ' + error.message);
+            }
+        }
+
+        function testPickingList() {
+            updateResults('Testing Picking List...\n');
+            try {
+                if (typeof initializePickingList === 'function') {
+                    initializePickingList();
+                    const section = document.getElementById('pickingListSection');
+                    if (section) {
+                        section.style.display = 'block';
+                        updateResults('✅ Picking List initialized successfully!\nSection found: ' + section.id);
+                    } else {
+                        updateResults('❌ Picking List section not found!');
+                    }
+                } else {
+                    updateResults('❌ initializePickingList function not found!');
+                }
+            } catch (error) {
+                updateResults('❌ Error: ' + error.message);
+            }
+        }
+
+        function testFuelEfficiency() {
+            updateResults('Testing Fuel Efficiency...\n');
+            try {
+                if (typeof initializeFuelEfficiency === 'function') {
+                    initializeFuelEfficiency();
+                    const section = document.getElementById('fuelEfficiencySection');
+                    if (section) {
+                        section.style.display = 'block';
+                        updateResults('✅ Fuel Efficiency initialized successfully!\nSection found: ' + section.id);
+                    } else {
+                        updateResults('❌ Fuel Efficiency section not found!');
+                    }
+                } else {
+                    updateResults('❌ initializeFuelEfficiency function not found!');
+                }
+            } catch (error) {
+                updateResults('❌ Error: ' + error.message);
+            }
+        }
+
+        // Auto-initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateResults('Page loaded. Click buttons to test features.');
+        });
+    </script>
+</body>
+</html>

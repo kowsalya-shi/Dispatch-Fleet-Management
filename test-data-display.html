@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Test - Laminate Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; }
+        .data-section { margin-bottom: 30px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Laminate Management System - Data Verification Test</h1>
+        <p class="lead">This page will show if the data is loading correctly</p>
+        
+        <div id="testResults"></div>
+        
+        <hr>
+        
+        <h2>📦 Materials Data</h2>
+        <div id="materialsData" class="data-section"></div>
+        
+        <h2>📋 Orders Data</h2>
+        <div id="ordersData" class="data-section"></div>
+        
+        <h2>🚛 Vehicles Data</h2>
+        <div id="vehiclesData" class="data-section"></div>
+        
+        <h2>💰 Invoices Data</h2>
+        <div id="invoicesData" class="data-section"></div>
+    </div>
+    
+    <script src="script.js?v=2.0"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = document.getElementById('testResults');
+            let html = '<div class="alert alert-info"><h3>Test Results:</h3><ul>';
+            
+            // Test if sampleData exists
+            if (typeof sampleData !== 'undefined') {
+                html += '<li class="success">✅ sampleData object exists</li>';
+                
+                // Test materials
+                if (sampleData.materials && sampleData.materials.length > 0) {
+                    html += `<li class="success">✅ Materials loaded: ${sampleData.materials.length} items</li>`;
+                    document.getElementById('materialsData').innerHTML = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Stock</th><th>Warehouse</th></tr></thead><tbody>' +
+                        sampleData.materials.map(m => `
+                            <tr>
+                                <td><strong>${m.code}</strong></td>
+                                <td>${m.name}</td>
+                                <td><span class="badge bg-primary">${m.category}</span></td>
+                                <td>${m.currentStock} ${m.unit}</td>
+                                <td>${m.warehouseName}</td>
+                            </tr>
+                        `).join('') + '</tbody></table></div>';
+                } else {
+                    html += '<li class="error">❌ Materials array is empty or missing</li>';
+                }
+                
+                // Test orders
+                if (sampleData.orders && sampleData.orders.length > 0) {
+                    html += `<li class="success">✅ Orders loaded: ${sampleData.orders.length} items</li>`;
+                    document.getElementById('ordersData').innerHTML = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Order #</th><th>Customer</th><th>Material</th><th>Quantity</th><th>Status</th></tr></thead><tbody>' +
+                        sampleData.orders.map(o => `
+                            <tr>
+                                <td><strong>${o.orderNumber}</strong></td>
+                                <td>${o.customer}</td>
+                                <td>${o.material}</td>
+                                <td>${o.quantity} ${o.unit}</td>
+                                <td><span class="badge bg-info">${o.status}</span></td>
+                            </tr>
+                        `).join('') + '</tbody></table></div>';
+                } else {
+                    html += '<li class="error">❌ Orders array is empty or missing</li>';
+                }
+                
+                // Test vehicles
+                if (sampleData.vehicles && sampleData.vehicles.length > 0) {
+                    html += `<li class="success">✅ Vehicles loaded: ${sampleData.vehicles.length} items</li>`;
+                    document.getElementById('vehiclesData').innerHTML = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Vehicle #</th><th>Type</th><th>Driver</th><th>Status</th><th>Capacity</th></tr></thead><tbody>' +
+                        sampleData.vehicles.map(v => `
+                            <tr>
+                                <td><strong>${v.number}</strong></td>
+                                <td>${v.type}</td>
+                                <td>${v.driver || 'No Driver'}</td>
+                                <td><span class="badge bg-success">${v.status}</span></td>
+                                <td>${v.capacity}</td>
+                            </tr>
+                        `).join('') + '</tbody></table></div>';
+                } else {
+                    html += '<li class="error">❌ Vehicles array is empty or missing</li>';
+                }
+                
+                // Test invoices
+                if (sampleData.invoices && sampleData.invoices.length > 0) {
+                    html += `<li class="success">✅ Invoices loaded: ${sampleData.invoices.length} items</li>`;
+                    document.getElementById('invoicesData').innerHTML = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Invoice #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Due Date</th></tr></thead><tbody>' +
+                        sampleData.invoices.map(i => `
+                            <tr>
+                                <td><strong>${i.invoiceNumber}</strong></td>
+                                <td>${i.customerName}</td>
+                                <td>₹${i.total.toLocaleString()}</td>
+                                <td><span class="badge bg-${i.status === 'paid' ? 'success' : 'warning'}">${i.status}</span></td>
+                                <td>${i.dueDate}</td>
+                            </tr>
+                        `).join('') + '</tbody></table></div>';
+                } else {
+                    html += '<li class="error">❌ Invoices array is empty or missing</li>';
+                }
+                
+            } else {
+                html += '<li class="error">❌ sampleData object not found!</li>';
+            }
+            
+            html += '</ul></div>';
+            results.innerHTML = html;
+            
+            // Add summary
+            const summary = document.createElement('div');
+            summary.className = 'alert alert-success mt-4';
+            summary.innerHTML = `
+                <h3>📊 Data Summary:</h3>
+                <ul>
+                    <li><strong>Total Materials:</strong> ${sampleData.materials?.length || 0}</li>
+                    <li><strong>Total Orders:</strong> ${sampleData.orders?.length || 0}</li>
+                    <li><strong>Total Vehicles:</strong> ${sampleData.vehicles?.length || 0}</li>
+                    <li><strong>Total Invoices:</strong> ${sampleData.invoices?.length || 0}</li>
+                </ul>
+                <p class="mb-0"><strong>If you see data above, the system is working correctly. The issue is browser caching in index.html</strong></p>
+            `;
+            document.body.appendChild(summary);
+        });
+    </script>
+</body>
+</html>

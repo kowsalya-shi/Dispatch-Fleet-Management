@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diagnostic</title>
+</head>
+<body>
+    <h1>Feature Diagnostic</h1>
+    <div id="mainContent"></div>
+    <div id="output"></div>
+
+    <script src="material-management-system.js"></script>
+    <script src="thin-sheet-handling.js"></script>
+    <script src="location-storage.js"></script>
+    <script src="picking-list.js"></script>
+    <script src="fuel-efficiency.js"></script>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(msg) {
+            output.innerHTML += msg + '<br>';
+            console.log(msg);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            log('DOM Content Loaded');
+            log('mainContent exists: ' + (document.getElementById('mainContent') !== null));
+            
+            // Test Material Management
+            log('\n--- Testing Material Management ---');
+            log('Function exists: ' + (typeof initializeMaterialManagementSystem === 'function'));
+            if (typeof initializeMaterialManagementSystem === 'function') {
+                try {
+                    initializeMaterialManagementSystem();
+                    log('Initialized successfully');
+                    const section = document.getElementById('materialManagementSection');
+                    log('Section exists: ' + (section !== null));
+                    if (section) {
+                        log('Section ID: ' + section.id);
+                        log('Section class: ' + section.className);
+                        log('Section display: ' + section.style.display);
+                    }
+                } catch (e) {
+                    log('ERROR: ' + e.message);
+                }
+            }
+            
+            // Test Thin Sheet
+            log('\n--- Testing Thin Sheet Handling ---');
+            log('Function exists: ' + (typeof initializeThinSheetHandling === 'function'));
+            if (typeof initializeThinSheetHandling === 'function') {
+                try {
+                    initializeThinSheetHandling();
+                    log('Initialized successfully');
+                    const section = document.getElementById('thinSheetHandlingSection');
+                    log('Section exists: ' + (section !== null));
+                } catch (e) {
+                    log('ERROR: ' + e.message);
+                }
+            }
+            
+            // Test Location Storage
+            log('\n--- Testing Location Storage ---');
+            log('Function exists: ' + (typeof initializeLocationStorage === 'function'));
+            if (typeof initializeLocationStorage === 'function') {
+                try {
+                    initializeLocationStorage();
+                    log('Initialized successfully');
+                    const section = document.getElementById('locationStorageSection');
+                    log('Section exists: ' + (section !== null));
+                } catch (e) {
+                    log('ERROR: ' + e.message);
+                }
+            }
+            
+            // Test Picking List
+            log('\n--- Testing Picking List ---');
+            log('Function exists: ' + (typeof initializePickingList === 'function'));
+            if (typeof initializePickingList === 'function') {
+                try {
+                    initializePickingList();
+                    log('Initialized successfully');
+                    const section = document.getElementById('pickingListSection');
+                    log('Section exists: ' + (section !== null));
+                } catch (e) {
+                    log('ERROR: ' + e.message);
+                }
+            }
+            
+            // Test Fuel Efficiency
+            log('\n--- Testing Fuel Efficiency ---');
+            log('Function exists: ' + (typeof initializeFuelEfficiency === 'function'));
+            if (typeof initializeFuelEfficiency === 'function') {
+                try {
+                    initializeFuelEfficiency();
+                    log('Initialized successfully');
+                    const section = document.getElementById('fuelEfficiencySection');
+                    log('Section exists: ' + (section !== null));
+                } catch (e) {
+                    log('ERROR: ' + e.message);
+                }
+            }
+            
+            log('\n--- All sections in mainContent ---');
+            const mainContent = document.getElementById('mainContent');
+            const sections = mainContent.querySelectorAll('.content-section');
+            log('Total sections: ' + sections.length);
+            sections.forEach((section, index) => {
+                log(`Section ${index + 1}: ID=${section.id}, display=${section.style.display}`);
+            });
+        });
+    </script>
+</body>
+</html>

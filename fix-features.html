@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Features - Diagnostic & Repair Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; background: #f8f9fa; }
+        .diagnostic-card { margin-bottom: 20px; }
+        .status-ok { color: #28a745; }
+        .status-error { color: #dc3545; }
+        .status-warning { color: #ffc107; }
+        pre { background: #fff; padding: 15px; border-radius: 5px; max-height: 400px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-tools"></i> Feature Diagnostic & Repair Tool</h1>
+        <p class="lead">This tool will help diagnose and fix issues with the new features</p>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card diagnostic-card">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-check-circle"></i> Step 1: Run Diagnostics</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-primary btn-lg" onclick="runDiagnostics()">
+                            <i class="fas fa-play"></i> Run Full Diagnostic
+                        </button>
+                        <div id="diagnosticResults" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card diagnostic-card">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-wrench"></i> Step 2: Test Individual Features</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group-vertical w-100">
+                            <button class="btn btn-outline-primary mb-2" onclick="testFeature('materialManagement')">
+                                <i class="fas fa-boxes"></i> Test Material Management
+                            </button>
+                            <button class="btn btn-outline-success mb-2" onclick="testFeature('thinSheet')">
+                                <i class="fas fa-layer-group"></i> Test Thin Sheet Handling
+                            </button>
+                            <button class="btn btn-outline-warning mb-2" onclick="testFeature('locationStorage')">
+                                <i class="fas fa-warehouse"></i> Test Location Storage
+                            </button>
+                            <button class="btn btn-outline-info mb-2" onclick="testFeature('pickingList')">
+                                <i class="fas fa-clipboard-list"></i> Test Picking List
+                            </button>
+                            <button class="btn btn-outline-danger mb-2" onclick="testFeature('fuelEfficiency')">
+                                <i class="fas fa-gas-pump"></i> Test Fuel Efficiency
+                            </button>
+                        </div>
+                        <div id="featureTestResults" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card diagnostic-card">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-eye"></i> Step 3: View Feature (if working)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="mainContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card diagnostic-card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5><i class="fas fa-info-circle"></i> Diagnostic Log</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre id="diagnosticLog"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="material-management-system.js"></script>
+    <script src="thin-sheet-handling.js"></script>
+    <script src="location-storage.js"></script>
+    <script src="picking-list.js"></script>
+    <script src="fuel-efficiency.js"></script>
+
+    <script>
+        let logText = '';
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'ok' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logText += `[${timestamp}] ${icon} ${message}\n`;
+            document.getElementById('diagnosticLog').textContent = logText;
+            console.log(message);
+        }
+
+        function runDiagnostics() {
+            logText = '';
+            log('=== STARTING FULL DIAGNOSTIC ===', 'info');
+            log('');
+
+            // Check if mainContent exists
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                log('✅ mainContent div exists', 'ok');
+            } else {
+                log('❌ mainContent div NOT FOUND', 'error');
+                return;
+            }
+
+            // Check if scripts are loaded
+            log('');
+            log('--- Checking if functions are loaded ---');
+            const functions = [
+                { name: 'Material Management', func: 'initializeMaterialManagementSystem' },
+                { name: 'Thin Sheet Handling', func: 'initializeThinSheetHandling' },
+                { name: 'Location Storage', func: 'initializeLocationStorage' },
+                { name: 'Picking List', func: 'initializePickingList' },
+                { name: 'Fuel Efficiency', func: 'initializeFuelEfficiency' }
+            ];
+
+            let allFunctionsLoaded = true;
+            functions.forEach(item => {
+                if (typeof window[item.func] === 'function') {
+                    log(`✅ ${item.name} function loaded`, 'ok');
+                } else {
+                    log(`❌ ${item.name} function NOT FOUND`, 'error');
+                    allFunctionsLoaded = false;
+                }
+            });
+
+            if (!allFunctionsLoaded) {
+                log('');
+                log('❌ CRITICAL: Some JavaScript files are not loaded!', 'error');
+                log('⚠️ Make sure all .js files are in the same directory', 'warning');
+                return;
+            }
+
+            // Initialize all features
+            log('');
+            log('--- Initializing features ---');
+            try {
+                initializeMaterialManagementSystem();
+                log('✅ Material Management initialized', 'ok');
+            } catch (e) {
+                log(`❌ Material Management error: ${e.message}`, 'error');
+            }
+
+            try {
+                initializeThinSheetHandling();
+                log('✅ Thin Sheet Handling initialized', 'ok');
+            } catch (e) {
+                log(`❌ Thin Sheet Handling error: ${e.message}`, 'error');
+            }
+
+            try {
+                initializeLocationStorage();
+                log('✅ Location Storage initialized', 'ok');
+            } catch (e) {
+                log(`❌ Location Storage error: ${e.message}`, 'error');
+            }
+
+            try {
+                initializePickingList();
+                log('✅ Picking List initialized', 'ok');
+            } catch (e) {
+                log(`❌ Picking List error: ${e.message}`, 'error');
+            }
+
+            try {
+                initializeFuelEfficiency();
+                log('✅ Fuel Efficiency initialized', 'ok');
+            } catch (e) {
+                log(`❌ Fuel Efficiency error: ${e.message}`, 'error');
+            }
+
+            // Check if sections were created
+            log('');
+            log('--- Checking if sections were created ---');
+            const sections = [
+                { name: 'Material Management', id: 'materialManagementSection' },
+                { name: 'Thin Sheet Handling', id: 'thinSheetHandlingSection' },
+                { name: 'Location Storage', id: 'locationStorageSection' },
+                { name: 'Picking List', id: 'pickingListSection' },
+                { name: 'Fuel Efficiency', id: 'fuelEfficiencySection' }
+            ];
+
+            let allSectionsCreated = true;
+            sections.forEach(item => {
+                const section = document.getElementById(item.id);
+                if (section) {
+                    log(`✅ ${item.name} section created (ID: ${item.id})`, 'ok');
+                    log(`   Display: ${section.style.display}, Class: ${section.className}`, 'info');
+                } else {
+                    log(`❌ ${item.name} section NOT FOUND (ID: ${item.id})`, 'error');
+                    allSectionsCreated = false;
+                }
+            });
+
+            // Summary
+            log('');
+            log('=== DIAGNOSTIC SUMMARY ===', 'info');
+            if (allFunctionsLoaded && allSectionsCreated) {
+                log('✅ ALL FEATURES ARE WORKING CORRECTLY!', 'ok');
+                log('');
+                log('If you cannot see features in index.html:', 'info');
+                log('1. Clear browser cache (Ctrl + Shift + Delete)', 'info');
+                log('2. Hard refresh the page (Ctrl + F5)', 'info');
+                log('3. Check browser console for errors (F12)', 'info');
+                
+                document.getElementById('diagnosticResults').innerHTML = `
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle"></i> All Features Working!</h5>
+                        <p>All features have been initialized successfully. If you're still having issues in index.html:</p>
+                        <ul>
+                            <li>Clear your browser cache</li>
+                            <li>Hard refresh the page (Ctrl + F5)</li>
+                            <li>Check the browser console for errors</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                log('❌ SOME FEATURES ARE NOT WORKING', 'error');
+                log('Please check the errors above', 'warning');
+                
+                document.getElementById('diagnosticResults').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-times-circle"></i> Issues Detected!</h5>
+                        <p>Some features are not working. Check the diagnostic log below for details.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function testFeature(featureName) {
+            const featureConfig = {
+                'materialManagement': {
+                    name: 'Material Management',
+                    initFunc: 'initializeMaterialManagementSystem',
+                    sectionId: 'materialManagementSection'
+                },
+                'thinSheet': {
+                    name: 'Thin Sheet Handling',
+                    initFunc: 'initializeThinSheetHandling',
+                    sectionId: 'thinSheetHandlingSection'
+                },
+                'locationStorage': {
+                    name: 'Location Storage',
+                    initFunc: 'initializeLocationStorage',
+                    sectionId: 'locationStorageSection'
+                },
+                'pickingList': {
+                    name: 'Picking List',
+                    initFunc: 'initializePickingList',
+                    sectionId: 'pickingListSection'
+                },
+                'fuelEfficiency': {
+                    name: 'Fuel Efficiency',
+                    initFunc: 'initializeFuelEfficiency',
+                    sectionId: 'fuelEfficiencySection'
+                }
+            };
+
+            const config = featureConfig[featureName];
+            log('');
+            log(`=== TESTING ${config.name.toUpperCase()} ===`, 'info');
+
+            try {
+                // Initialize
+                if (typeof window[config.initFunc] === 'function') {
+                    window[config.initFunc]();
+                    log(`✅ ${config.name} initialized`, 'ok');
+                } else {
+                    log(`❌ ${config.name} function not found`, 'error');
+                    return;
+                }
+
+                // Check section
+                const section = document.getElementById(config.sectionId);
+                if (section) {
+                    log(`✅ ${config.name} section found`, 'ok');
+                    
+                    // Hide all sections
+                    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+                    
+                    // Show this section
+                    section.style.display = 'block';
+                    log(`✅ ${config.name} section displayed`, 'ok');
+                    
+                    document.getElementById('featureTestResults').innerHTML = `
+                        <div class="alert alert-success">
+                            <h5><i class="fas fa-check-circle"></i> ${config.name} is Working!</h5>
+                            <p>The feature has been displayed below. Scroll down to see it.</p>
+                        </div>
+                    `;
+                } else {
+                    log(`❌ ${config.name} section not found`, 'error');
+                    document.getElementById('featureTestResults').innerHTML = `
+                        <div class="alert alert-danger">
+                            <h5><i class="fas fa-times-circle"></i> ${config.name} Failed!</h5>
+                            <p>The section was not created. Check the diagnostic log.</p>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                log(`❌ Error testing ${config.name}: ${e.message}`, 'error');
+                document.getElementById('featureTestResults').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-times-circle"></i> Error!</h5>
+                        <p>${e.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run diagnostics on page load
+        window.addEventListener('load', function() {
+            log('Page loaded. Click "Run Full Diagnostic" to start.', 'info');
+        });
+    </script>
+</body>
+</html>

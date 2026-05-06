@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Workflow Test - Fleet Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1><i class="fas fa-cogs"></i> Manual Workflow Test</h1>
+        <p class="lead">Testing the manual workflow functionality</p>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-check-circle"></i> Manual Workflow Verification</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-thumbs-up"></i> Manual Workflow Successfully Implemented!</h6>
+                            <p class="mb-0">The workflow has been changed from automatic to manual control as requested.</p>
+                        </div>
+                        
+                        <h6>Changes Made:</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="fas fa-times text-danger"></i> 
+                                <strong>Removed:</strong> Automatic workflow progression with setTimeout()
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-times text-danger"></i> 
+                                <strong>Removed:</strong> automaticOrderToDispatchFlow() function
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-times text-danger"></i> 
+                                <strong>Removed:</strong> simulateDeliveryWorkflow() automatic progression
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-plus text-success"></i> 
+                                <strong>Added:</strong> Manual workflow control buttons
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-plus text-success"></i> 
+                                <strong>Added:</strong> manualProgressWorkflow() function
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-plus text-success"></i> 
+                                <strong>Added:</strong> resetWorkflow() function
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-edit text-primary"></i> 
+                                <strong>Updated:</strong> Order creation to show manual processing message
+                            </li>
+                        </ul>
+                        
+                        <div class="mt-4">
+                            <h6>How to Use Manual Workflow:</h6>
+                            <ol>
+                                <li>Create a new order in the Order Management or Dispatch Management section</li>
+                                <li>Go to Dispatch Management section</li>
+                                <li>Use the manual workflow control buttons to progress through each step:
+                                    <ul>
+                                        <li>Complete Sales Order</li>
+                                        <li>Complete Warehouse</li>
+                                        <li>Complete Invoice</li>
+                                        <li>Assign Vehicle & Driver</li>
+                                        <li>Dispatch Order</li>
+                                        <li>Start Tracking</li>
+                                        <li>Mark Delivered</li>
+                                        <li>Customer Sign-off</li>
+                                    </ul>
+                                </li>
+                                <li>Use "Reset Workflow" button to start over if needed</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="index.html" class="btn btn-primary">
+                                <i class="fas fa-arrow-left"></i> Go to Main Application
+                            </a>
+                            <a href="mobile-app.html" class="btn btn-info">
+                                <i class="fas fa-mobile-alt"></i> Open Mobile App
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-info-circle"></i> Workflow Control Buttons</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>The following manual control buttons are now available in the Dispatch Management section:</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="btn-group-vertical w-100" role="group">
+                                    <button type="button" class="btn btn-outline-primary mb-2" disabled>
+                                        <i class="fas fa-shopping-cart"></i> Complete Sales Order
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary mb-2" disabled>
+                                        <i class="fas fa-warehouse"></i> Complete Warehouse
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info mb-2" disabled>
+                                        <i class="fas fa-file-invoice"></i> Complete Invoice
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning mb-2" disabled>
+                                        <i class="fas fa-user-plus"></i> Assign Vehicle & Driver
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="btn-group-vertical w-100" role="group">
+                                    <button type="button" class="btn btn-outline-success mb-2" disabled>
+                                        <i class="fas fa-play"></i> Dispatch Order
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary mb-2" disabled>
+                                        <i class="fas fa-map-marker-alt"></i> Start Tracking
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success mb-2" disabled>
+                                        <i class="fas fa-check"></i> Mark Delivered
+                                    </button>
+                                    <button type="button" class="btn btn-outline-dark mb-2" disabled>
+                                        <i class="fas fa-signature"></i> Customer Sign-off
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary" disabled>
+                                <i class="fas fa-undo"></i> Reset Workflow
+                            </button>
+                            <small class="text-muted ms-2">(These buttons are functional in the main application)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

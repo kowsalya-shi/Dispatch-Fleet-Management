@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Management Mobile App</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3498db">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fleet Manager">
+    <meta name="msapplication-TileColor" content="#2c3e50">
+    <meta name="msapplication-TileImage" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%233498db'/><path d='M36 36h120v24H36zm0 36h120v24H36zm0 36h120v24H36zm0 36h120v24H36z' fill='white'/></svg>">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%233498db'/><path d='M36 36h120v24H36zm0 36h120v24H36zm0 36h120v24H36zm0 36h120v24H36z' fill='white'/></svg>">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Mobile-First Design */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .mobile-header h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Mobile Content */
+        .mobile-content {
+            margin-top: 80px;
+            padding: 1rem;
+            min-height: calc(100vh - 160px);
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6c757d;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            min-width: 60px;
+        }
+
+        .mobile-nav-item.active {
+            color: #0d6efd;
+            background-color: #e7f3ff;
+        }
+
+        .mobile-nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .mobile-nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Mobile Cards */
+        .mobile-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: none;
+        }
+
+        .mobile-card h5 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-item.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stat-item.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-item.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Mobile List Items */
+        .mobile-list-item {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #0d6efd;
+        }
+
+        .mobile-list-item h6 {
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .mobile-list-item p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Buttons */
+        .mobile-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: none;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-action {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .quick-action:hover {
+            border-color: #0d6efd;
+            color: #0d6efd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+        }
+
+        .quick-action i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Mobile Sections */
+        .mobile-section {
+            display: none;
+        }
+
+        .mobile-section.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .mobile-content {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Badge Styles */
+        .mobile-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .mobile-badge.urgent {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .mobile-badge.high {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .mobile-badge.normal {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .mobile-badge.available {
+            background-color: #198754;
+            color: white;
+        }
+
+        .mobile-badge.pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4><i class="fas fa-truck"></i> Fleet Manager</h4>
+            <div>
+                <button class="btn btn-light btn-sm" onclick="syncData()">
+                    <i class="fas fa-sync"></i>
+                </button>
+                <button class="btn btn-light btn-sm" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge bg-danger">3</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Content -->
+    <div class="mobile-content">
+        <!-- Dashboard Section -->
+        <div id="mobile-dashboard" class="mobile-section active">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="mobile-total-vehicles">5</div>
+                    <div class="stat-label">Total Vehicles</div>
+                </div>
+                <div class="stat-item success">
+                    <div class="stat-value" id="mobile-active-trips">1</div>
+                    <div class="stat-label">Active Trips</div>
+                </div>
+                <div class="stat-item warning">
+                    <div class="stat-value" id="mobile-pending-orders">3</div>
+                    <div class="stat-label">Pending Orders</div>
+                </div>
+                <div class="stat-item info">
+                    <div class="stat-value" id="mobile-delivered-today">1</div>
+                    <div class="stat-label">Delivered Today</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a href="#" class="quick-action" onclick="showMobileSection('mobile-orders')">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>New Order</span>
+                </a>
+                <a href="#" class="quick-action" onclick="showMobileSection('mobile-tracking')">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Track Vehicle</span>
+                </a>
+                <a href="#" class="quick-action" onclick="showMobileSection('mobile-dispatch')">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>Dispatch</span>
+                </a>
+                <a href="#" class="quick-action" onclick="sendQuickWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </a>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="mobile-card">
+                <h5><i class="fas fa-clock"></i> Recent Activities</h5>
+                <div id="mobile-recent-activities">
+                    <div class="mobile-list-item">
+                        <h6>Order ORD001 Dispatched</h6>
+                        <p><i class="fas fa-truck"></i> TN01AB1234 - John Doe | 2 hours ago</p>
+                    </div>
+                    <div class="mobile-list-item">
+                        <h6>New Order Received</h6>
+                        <p><i class="fas fa-shopping-cart"></i> ABC Corporation | 3 hours ago</p>
+                    </div>
+                    <div class="mobile-list-item">
+                        <h6>Delivery Completed</h6>
+                        <p><i class="fas fa-check-circle"></i> Order ORD003 | 4 hours ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="mobile-orders" class="mobile-section">
+            <div class="mobile-card">
+                <h5><i class="fas fa-shopping-cart"></i> Order Management</h5>
+                
+                <!-- Priority Filter -->
+                <div class="mb-3">
+                    <select class="form-select" id="mobile-priority-filter" onchange="filterMobileOrders()">
+                        <option value="all">All Priorities</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="high">High</option>
+                        <option value="normal">Normal</option>
+                    </select>
+                </div>
+
+                <!-- Orders List -->
+                <div id="mobile-orders-list">
+                    <div class="mobile-list-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>ORD001 - ABC Corporation</h6>
+                                <p>Steel Rods (100 Tons)</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Chennai → Bangalore</p>
+                                <p><i class="fas fa-phone"></i> +91 98765 43210 | <i class="fas fa-envelope"></i> abc@corp.com</p>
+                            </div>
+                            <span class="mobile-badge urgent">Urgent</span>
+                        </div>
+                        <button class="mobile-btn btn-primary mt-2" onclick="processOrder('ORD001')">
+                            <i class="fas fa-play"></i> Process Order
+                        </button>
+                    </div>
+                    
+                    <div class="mobile-list-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>ORD002 - XYZ Industries</h6>
+                                <p>Cement Bags (500 Bags)</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Bangalore → Coimbatore</p>
+                                <p><i class="fas fa-phone"></i> +91 87654 32109 | <i class="fas fa-envelope"></i> xyz@ind.com</p>
+                            </div>
+                            <span class="mobile-badge high">High</span>
+                        </div>
+                        <button class="mobile-btn btn-warning mt-2" onclick="trackOrder('ORD002')">
+                            <i class="fas fa-map-marker-alt"></i> Track Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tracking Section -->
+        <div id="mobile-tracking" class="mobile-section">
+            <div class="mobile-card">
+                <h5><i class="fas fa-map-marker-alt"></i> Live Tracking</h5>
+                
+                <!-- Vehicle Status -->
+                <div class="mobile-list-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6>TN01AB1234</h6>
+                            <p>John Doe - Chennai → Bangalore</p>
+                            <p><i class="fas fa-tachometer-alt"></i> 65 km/h | 65% Complete</p>
+                        </div>
+                        <span class="mobile-badge available">Active</span>
+                    </div>
+                    <div class="progress mt-2" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: 65%"></div>
+                    </div>
+                </div>
+
+                <!-- Map Placeholder -->
+                <div class="mt-3 p-4 bg-light rounded text-center">
+                    <i class="fas fa-map fa-3x text-muted mb-2"></i>
+                    <p class="text-muted">Live Map View</p>
+                    <button class="mobile-btn btn-primary" onclick="openFullMap()">
+                        <i class="fas fa-expand"></i> Open Full Map
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispatch Section -->
+        <div id="mobile-dispatch" class="mobile-section">
+            <div class="mobile-card">
+                <h5><i class="fas fa-shipping-fast"></i> Dispatch Management</h5>
+                
+                <!-- Workflow Steps -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success">Sales Order</span>
+                        <span class="badge bg-success">Warehouse</span>
+                        <span class="badge bg-warning">Invoice</span>
+                        <span class="badge bg-secondary">Vehicle</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: 50%"></div>
+                    </div>
+                    <small class="text-muted">Step 2 of 8 - Processing Invoice</small>
+                </div>
+
+                <!-- Pending Assignments -->
+                <div class="mobile-list-item">
+                    <h6>Pending Vehicle Assignment</h6>
+                    <p>Order ORD001 - ABC Corporation</p>
+                    <p><i class="fas fa-clock"></i> Waiting for available vehicle</p>
+                    <button class="mobile-btn btn-primary mt-2" onclick="assignVehicle('ORD001')">
+                        <i class="fas fa-truck"></i> Assign Vehicle
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication Section -->
+        <div id="mobile-communication" class="mobile-section">
+            <div class="mobile-card">
+                <h5><i class="fas fa-comments"></i> Communication</h5>
+                
+                <!-- WhatsApp Integration -->
+                <div class="mobile-list-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6><i class="fab fa-whatsapp text-success"></i> WhatsApp</h6>
+                            <p>Connected: +91 9843525031</p>
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="openMobileWhatsApp()">
+                            <i class="fab fa-whatsapp"></i> Send
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Email Integration -->
+                <div class="mobile-list-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6><i class="fas fa-envelope text-primary"></i> Email</h6>
+                            <p>From: shinydora753152@gmail.com</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openMobileEmail()">
+                            <i class="fas fa-envelope"></i> Send
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Messages -->
+                <h6 class="mt-3">Recent Messages</h6>
+                <div class="mobile-list-item">
+                    <p><strong>WhatsApp to Customer:</strong> Order ORD001 dispatched</p>
+                    <small class="text-muted">2 hours ago</small>
+                </div>
+                <div class="mobile-list-item">
+                    <p><strong>Email to ABC Corp:</strong> Delivery confirmation</p>
+                    <small class="text-muted">4 hours ago</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <a href="#" class="mobile-nav-item active" onclick="showMobileSection('mobile-dashboard')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="showMobileSection('mobile-orders')">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Orders</span>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="showMobileSection('mobile-tracking')">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Track</span>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="showMobileSection('mobile-dispatch')">
+            <i class="fas fa-shipping-fast"></i>
+            <span>Dispatch</span>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="showMobileSection('mobile-communication')">
+            <i class="fas fa-comments"></i>
+            <span>Chat</span>
+        </a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile App JavaScript
+        function showMobileSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.mobile-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to current nav item
+            event.target.closest('.mobile-nav-item').classList.add('active');
+        }
+
+        function syncData() {
+            showMobileNotification('Syncing data with main system...', 'info');
+            
+            // Simulate data sync
+            setTimeout(() => {
+                showMobileNotification('Data synced successfully!', 'success');
+                updateMobileStats();
+            }, 2000);
+        }
+
+        function updateMobileStats() {
+            // Update stats from main system data
+            document.getElementById('mobile-total-vehicles').textContent = '5';
+            document.getElementById('mobile-active-trips').textContent = '1';
+            document.getElementById('mobile-pending-orders').textContent = '3';
+            document.getElementById('mobile-delivered-today').textContent = '1';
+        }
+
+        function showNotifications() {
+            alert('Notifications:\n\n• Order ORD001 dispatched\n• Vehicle TN01AB1234 location updated\n• New order from XYZ Industries');
+        }
+
+        function processOrder(orderId) {
+            showMobileNotification(`Processing order ${orderId}...`, 'info');
+            setTimeout(() => {
+                showMobileNotification(`Order ${orderId} is now available for manual processing in Dispatch Management!`, 'success');
+                // Update the order status in mobile view
+                updateMobileOrderStatus(orderId, 'processing');
+            }, 1500);
+        }
+
+        function updateMobileOrderStatus(orderId, status) {
+            // Update order status in mobile interface
+            const orderElements = document.querySelectorAll('.mobile-list-item');
+            orderElements.forEach(element => {
+                if (element.textContent.includes(orderId)) {
+                    const badge = element.querySelector('.mobile-badge');
+                    if (badge) {
+                        badge.className = 'mobile-badge ' + (status === 'processing' ? 'high' : status);
+                        badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                    }
+                }
+            });
+        }
+
+        function trackOrder(orderId) {
+            showMobileSection('mobile-tracking');
+            showMobileNotification(`Tracking order ${orderId}`, 'info');
+        }
+
+        function assignVehicle(orderId) {
+            showMobileNotification(`Assigning vehicle to order ${orderId}...`, 'info');
+            setTimeout(() => {
+                showMobileNotification(`Vehicle TN01AB1234 assigned to order ${orderId}`, 'success');
+            }, 1500);
+        }
+
+        function openFullMap() {
+            showMobileNotification('Opening full map view...', 'info');
+        }
+
+        function sendQuickWhatsApp() {
+            showMobileSection('mobile-communication');
+            showMobileNotification('WhatsApp panel opened', 'info');
+        }
+
+        function openMobileWhatsApp() {
+            const message = prompt('Enter WhatsApp message:');
+            if (message) {
+                // Actually open WhatsApp with the message
+                const phoneNumber = '919843525031'; // WhatsApp format without + and spaces
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                
+                // Try to open WhatsApp app first, fallback to web
+                window.open(whatsappUrl, '_blank');
+                
+                showMobileNotification(`WhatsApp message sent: ${message}`, 'success');
+            }
+        }
+
+        function openMobileEmail() {
+            const subject = prompt('Enter email subject:');
+            if (subject) {
+                showMobileNotification(`Email sent: ${subject}`, 'success');
+            }
+        }
+
+        function filterMobileOrders() {
+            const filter = document.getElementById('mobile-priority-filter').value;
+            showMobileNotification(`Filtering orders by ${filter} priority`, 'info');
+        }
+
+        function showMobileNotification(message, type) {
+            // Create mobile notification
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed`;
+            notification.style.cssText = 'top: 90px; left: 1rem; right: 1rem; z-index: 9999;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Initialize mobile app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMobileStats();
+            showMobileNotification('Fleet Management Mobile App loaded successfully!', 'success');
+            
+            // Register service worker for PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            }
+            
+            // Add install prompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallButton();
+            });
+        });
+
+        function showInstallButton() {
+            const installButton = document.createElement('button');
+            installButton.className = 'btn btn-primary position-fixed';
+            installButton.style.cssText = 'bottom: 80px; right: 20px; z-index: 1000; border-radius: 50px; padding: 10px 15px;';
+            installButton.innerHTML = '<i class="fas fa-download"></i> Install App';
+            installButton.onclick = installApp;
+            document.body.appendChild(installButton);
+        }
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showMobileNotification('App installed successfully!', 'success');
+                    }
+                    deferredPrompt = null;
+                    // Remove install button
+                    const installButton = document.querySelector('button[onclick="installApp()"]');
+                    if (installButton) {
+                        installButton.remove();
+                    }
+                });
+            }
+        }
+
+        // Auto-sync every 30 seconds
+        setInterval(() => {
+            updateMobileStats();
+        }, 30000);
+    </script>
+</body>
+</html>

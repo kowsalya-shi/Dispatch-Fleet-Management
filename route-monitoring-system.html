@@ -1,0 +1,526 @@
+<!-- ========================================
+     ROUTE DEVIATION MONITORING & CONTROL SYSTEM
+     ======================================== -->
+
+<!-- Add this section to index.html after GPS Tracking Section -->
+
+<!-- Route Monitoring & Control Section -->
+<div id="routeMonitoring" class="content-section" style="display: none;">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="fas fa-shield-alt"></i> Route Monitoring & Control System 🛡️</h2>
+            <p class="text-muted">Advanced route deviation detection | GPS accuracy monitoring | Automatic fare calculation | Real-time alerts</p>
+        </div>
+    </div>
+
+    <!-- Alert Banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <h5><i class="fas fa-exclamation-triangle"></i> Active Monitoring</h5>
+                <p class="mb-0">System is actively monitoring all vehicles for route deviations, GPS accuracy, and fare calculations. Alerts will be triggered for any unauthorized route changes.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monitoring Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 id="onRouteVehicles">3</h4>
+                            <p class="mb-0">On Planned Route</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 id="deviatedVehicles">1</h4>
+                            <p class="mb-0">Route Deviations</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 id="gpsAccuracy">98.5%</h4>
+                            <p class="mb-0">GPS Accuracy</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-satellite fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 id="autoCalculations">12</h4>
+                            <p class="mb-0">Auto Calculations</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-calculator fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Monitoring Dashboard -->
+    <div class="row mb-4">
+        <!-- Route Deviation Alerts -->
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Route Deviation Alerts</h5>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    <div id="deviationAlerts">
+                        <!-- Deviation Alert 1 -->
+                        <div class="alert alert-danger mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1"><i class="fas fa-truck"></i> TN01AB1234 - Route Deviation Detected</h6>
+                                    <small class="text-muted">Driver: John Doe | Route: CHN-BLR-001</small>
+                                    <p class="mb-2 mt-2">
+                                        <strong>Deviation:</strong> 5.2 km off planned route<br>
+                                        <strong>Location:</strong> Hosur Bypass (Unauthorized)<br>
+                                        <strong>Time:</strong> 10:45 AM<br>
+                                        <strong>Extra Distance:</strong> 5.2 km<br>
+                                        <strong>Extra Cost:</strong> ₹420
+                                    </p>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-warning" onclick="contactDriver('TN01AB1234')">
+                                            <i class="fas fa-phone"></i> Contact Driver
+                                        </button>
+                                        <button class="btn btn-info" onclick="viewDeviationMap('TN01AB1234')">
+                                            <i class="fas fa-map"></i> View Map
+                                        </button>
+                                        <button class="btn btn-danger" onclick="blockRoute('TN01AB1234')">
+                                            <i class="fas fa-ban"></i> Block Payment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Deviation Alert 2 -->
+                        <div class="alert alert-warning mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1"><i class="fas fa-truck"></i> TN02CD5678 - Minor Deviation</h6>
+                                    <small class="text-muted">Driver: Jane Smith | Route: CHN-COI-002</small>
+                                    <p class="mb-2 mt-2">
+                                        <strong>Deviation:</strong> 1.8 km off planned route<br>
+                                        <strong>Location:</strong> Alternative highway<br>
+                                        <strong>Time:</strong> 11:20 AM<br>
+                                        <strong>Extra Distance:</strong> 1.8 km<br>
+                                        <strong>Extra Cost:</strong> ₹145
+                                    </p>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-warning" onclick="contactDriver('TN02CD5678')">
+                                            <i class="fas fa-phone"></i> Contact Driver
+                                        </button>
+                                        <button class="btn btn-success" onclick="approveDeviation('TN02CD5678')">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- No Deviation Alert -->
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-check-circle"></i> TN04GH3456 - On Planned Route</h6>
+                            <small>Driver: Sarah Wilson | Route: CHN-MDU-003</small>
+                            <p class="mb-0 mt-2">Vehicle is following the planned route. No deviations detected.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GPS Accuracy Monitor -->
+        <div class="col-md-6">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-satellite"></i> GPS Accuracy Monitor</h5>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    <div id="gpsAccuracyMonitor">
+                        <!-- GPS Status Table -->
+                        <table class="table table-sm table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Vehicle</th>
+                                    <th>GPS Signal</th>
+                                    <th>Accuracy</th>
+                                    <th>Last Update</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>TN01AB1234</strong></td>
+                                    <td><span class="badge bg-success">Strong</span></td>
+                                    <td>±3m</td>
+                                    <td>2 sec ago</td>
+                                    <td><i class="fas fa-check-circle text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TN02CD5678</strong></td>
+                                    <td><span class="badge bg-success">Strong</span></td>
+                                    <td>±5m</td>
+                                    <td>1 sec ago</td>
+                                    <td><i class="fas fa-check-circle text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TN03EF9012</strong></td>
+                                    <td><span class="badge bg-warning">Moderate</span></td>
+                                    <td>±15m</td>
+                                    <td>8 sec ago</td>
+                                    <td><i class="fas fa-exclamation-triangle text-warning"></i></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TN04GH3456</strong></td>
+                                    <td><span class="badge bg-success">Strong</span></td>
+                                    <td>±4m</td>
+                                    <td>3 sec ago</td>
+                                    <td><i class="fas fa-check-circle text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TN05IJ7890</strong></td>
+                                    <td><span class="badge bg-danger">Weak</span></td>
+                                    <td>±50m</td>
+                                    <td>45 sec ago</td>
+                                    <td><i class="fas fa-times-circle text-danger"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- GPS Accuracy Chart -->
+                        <div class="mt-3">
+                            <h6>GPS Signal Strength (Last Hour)</h6>
+                            <div class="progress mb-2" style="height: 25px;">
+                                <div class="progress-bar bg-success" style="width: 85%">Strong: 85%</div>
+                                <div class="progress-bar bg-warning" style="width: 10%">Moderate: 10%</div>
+                                <div class="progress-bar bg-danger" style="width: 5%">Weak: 5%</div>
+                            </div>
+                        </div>
+
+                        <!-- GPS Alerts -->
+                        <div class="alert alert-info mt-3">
+                            <h6><i class="fas fa-info-circle"></i> GPS Monitoring Active</h6>
+                            <ul class="mb-0">
+                                <li>Real-time location updates every 2 seconds</li>
+                                <li>Accuracy threshold: ±10 meters</li>
+                                <li>Auto-alert on signal loss > 30 seconds</li>
+                                <li>Backup GPS system available</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Automatic Fare Calculation System -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5><i class="fas fa-calculator"></i> Automatic Kilometre & Fare Calculation System</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Calculation Settings -->
+                        <div class="col-md-4">
+                            <h6 class="text-primary">Calculation Settings</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Base Rate per KM</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="baseRatePerKm" value="12" step="0.5">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Toll Charges</label>
+                                <select class="form-control" id="tollCharges">
+                                    <option value="actual">Actual Toll Cost</option>
+                                    <option value="estimated">Estimated</option>
+                                    <option value="none">No Toll</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Fuel Surcharge</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="fuelSurcharge" value="15" step="1">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Calculation Method</label>
+                                <select class="form-control" id="calculationMethod">
+                                    <option value="gps-actual">GPS Actual Distance</option>
+                                    <option value="map-planned">Map Planned Route</option>
+                                    <option value="shortest">Shortest Path</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="updateCalculationSettings()">
+                                <i class="fas fa-save"></i> Update Settings
+                            </button>
+                        </div>
+
+                        <!-- Live Calculations -->
+                        <div class="col-md-8">
+                            <h6 class="text-success">Live Trip Calculations</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Vehicle</th>
+                                            <th>Route</th>
+                                            <th>Planned KM</th>
+                                            <th>Actual KM</th>
+                                            <th>Deviation</th>
+                                            <th>Calculated Fare</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fareCalculationTable">
+                                        <tr>
+                                            <td><strong>TN01AB1234</strong></td>
+                                            <td>CHN-BLR-001</td>
+                                            <td>350 km</td>
+                                            <td class="text-danger">355.2 km</td>
+                                            <td><span class="badge bg-danger">+5.2 km</span></td>
+                                            <td>
+                                                <strong>₹4,682</strong><br>
+                                                <small class="text-muted">Base: ₹4,262 | Toll: ₹420</small>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-warning" onclick="reviewFare('TN01AB1234')">
+                                                    <i class="fas fa-exclamation-triangle"></i> Review
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TN02CD5678</strong></td>
+                                            <td>CHN-COI-002</td>
+                                            <td>502 km</td>
+                                            <td class="text-warning">503.8 km</td>
+                                            <td><span class="badge bg-warning">+1.8 km</span></td>
+                                            <td>
+                                                <strong>₹6,566</strong><br>
+                                                <small class="text-muted">Base: ₹6,046 | Toll: ₹520</small>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info" onclick="approveFare('TN02CD5678')">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TN04GH3456</strong></td>
+                                            <td>CHN-MDU-003</td>
+                                            <td>458 km</td>
+                                            <td class="text-success">458 km</td>
+                                            <td><span class="badge bg-success">0 km</span></td>
+                                            <td>
+                                                <strong>₹5,876</strong><br>
+                                                <small class="text-muted">Base: ₹5,496 | Toll: ₹380</small>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-success" onclick="approveFare('TN04GH3456')">
+                                                    <i class="fas fa-check-circle"></i> Auto-Approved
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Calculation Summary -->
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6>Total Planned Distance</h6>
+                                            <h4 class="text-primary">1,310 km</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6>Total Actual Distance</h6>
+                                            <h4 class="text-warning">1,317 km</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6>Total Calculated Fare</h6>
+                                            <h4 class="text-success">₹17,124</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Route Control Actions -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5><i class="fas fa-shield-alt"></i> Route Control Actions</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Available Control Measures:</h6>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1"><i class="fas fa-ban"></i> Block Unauthorized Routes</h6>
+                                    <small>Prevent payment for unauthorized route deviations</small>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="enableRouteBlocking()">
+                                    <i class="fas fa-toggle-on"></i> Enabled
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1"><i class="fas fa-bell"></i> Real-time Alerts</h6>
+                                    <small>Send instant alerts on route deviations</small>
+                                </div>
+                                <button class="btn btn-success btn-sm" onclick="toggleAlerts()">
+                                    <i class="fas fa-toggle-on"></i> Active
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1"><i class="fas fa-phone"></i> Auto-Contact Driver</h6>
+                                    <small>Automatically call driver on major deviations</small>
+                                </div>
+                                <button class="btn btn-success btn-sm" onclick="toggleAutoContact()">
+                                    <i class="fas fa-toggle-on"></i> Active
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1"><i class="fas fa-file-alt"></i> Generate Deviation Report</h6>
+                                    <small>Create detailed report of all deviations</small>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="generateDeviationReport()">
+                                    <i class="fas fa-download"></i> Generate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-chart-line"></i> Monitoring Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Today's Performance:</h6>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Routes Completed</span>
+                            <strong>12 / 15</strong>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 80%">80%</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>On-Route Compliance</span>
+                            <strong>92%</strong>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 92%">92%</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>GPS Accuracy</span>
+                            <strong>98.5%</strong>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 98.5%">98.5%</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Fare Calculation Accuracy</span>
+                            <strong>99.2%</strong>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 99.2%">99.2%</div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h6>Cost Savings:</h6>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="text-danger">₹2,450</h5>
+                                    <small>Blocked Unauthorized Costs</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="text-success">₹8,920</h5>
+                                    <small>Saved This Month</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

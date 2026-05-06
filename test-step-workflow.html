@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Step Workflow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .workflow-step-form {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Test Step-by-Step Workflow</h2>
+        
+        <button class="btn btn-success" onclick="testStartManualWorkflow()">
+            <i class="fas fa-play"></i> Start Manual Dispatch
+        </button>
+        
+        <!-- Current Step Display -->
+        <div id="currentStepDisplay" class="alert alert-primary" style="display: none;">
+            <h6 id="currentStepTitle">Current Step</h6>
+            <p id="currentStepDescription">Step description</p>
+        </div>
+        
+        <!-- Workflow Forms Container -->
+        <div id="workflowFormsContainer" style="display: none;">
+            
+            <!-- Step 1: Sales Order Form -->
+            <div id="step1Form" class="workflow-step-form" style="display: none;">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-shopping-cart"></i> Step 1: Sales Order</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Customer Name *</label>
+                                        <input type="text" class="form-control" id="step1CustomerName" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number *</label>
+                                        <input type="tel" class="form-control" id="step1Phone" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="testCompleteStep(1)">
+                                <i class="fas fa-arrow-right"></i> Complete Sales Order & Continue
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 2: Warehouse Form -->
+            <div id="step2Form" class="workflow-step-form" style="display: none;">
+                <div class="card border-secondary">
+                    <div class="card-header bg-secondary text-white">
+                        <h5><i class="fas fa-warehouse"></i> Step 2: Warehouse</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Material Type *</label>
+                                        <input type="text" class="form-control" id="step2MaterialType" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Quantity *</label>
+                                        <input type="number" class="form-control" id="step2Quantity" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="testCompleteStep(2)">
+                                <i class="fas fa-arrow-right"></i> Complete Warehouse & Continue
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Workflow Complete -->
+            <div id="workflowComplete" style="display: none;">
+                <div class="alert alert-success">
+                    <h5><i class="fas fa-check-circle"></i> Workflow Complete!</h5>
+                    <p>All steps have been completed successfully.</p>
+                    <button class="btn btn-primary" onclick="testResetWorkflow()">Start New Workflow</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentWorkflowStep = 0;
+        let workflowData = {};
+        
+        function testStartManualWorkflow() {
+            console.log('Starting manual workflow...');
+            
+            // Reset workflow
+            currentWorkflowStep = 0;
+            workflowData = {};
+            
+            // Show workflow forms container
+            document.getElementById('workflowFormsContainer').style.display = 'block';
+            
+            // Hide all forms first
+            for (let i = 1; i <= 2; i++) {
+                document.getElementById(`step${i}Form`).style.display = 'none';
+            }
+            document.getElementById('workflowComplete').style.display = 'none';
+            
+            // Show first step
+            testShowStep(1);
+            
+            alert('Manual workflow started. Complete each step form to progress.');
+        }
+        
+        function testShowStep(stepNumber) {
+            console.log(`Showing step ${stepNumber}`);
+            currentWorkflowStep = stepNumber;
+            
+            // Hide all forms
+            for (let i = 1; i <= 2; i++) {
+                document.getElementById(`step${i}Form`).style.display = 'none';
+            }
+            
+            // Show current step form
+            document.getElementById(`step${stepNumber}Form`).style.display = 'block';
+            
+            // Update current step display
+            const stepTitles = {
+                1: 'Sales Order - Customer Information',
+                2: 'Warehouse - Material & Pickup Details'
+            };
+            
+            const stepDescriptions = {
+                1: 'Enter customer details and order priority',
+                2: 'Specify pickup location, material type and quantity'
+            };
+            
+            document.getElementById('currentStepDisplay').style.display = 'block';
+            document.getElementById('currentStepTitle').textContent = `Step ${stepNumber}: ${stepTitles[stepNumber]}`;
+            document.getElementById('currentStepDescription').textContent = stepDescriptions[stepNumber];
+        }
+        
+        function testCompleteStep(stepNumber) {
+            console.log(`Completing step ${stepNumber}`);
+            
+            // Simple validation
+            const requiredFields = document.querySelectorAll(`#step${stepNumber}Form input[required]`);
+            for (let field of requiredFields) {
+                if (!field.value.trim()) {
+                    alert('Please fill in all required fields before continuing.');
+                    return;
+                }
+            }
+            
+            // Save step data (simplified)
+            if (stepNumber === 1) {
+                workflowData.customerName = document.getElementById('step1CustomerName').value;
+                workflowData.phone = document.getElementById('step1Phone').value;
+            } else if (stepNumber === 2) {
+                workflowData.materialType = document.getElementById('step2MaterialType').value;
+                workflowData.quantity = document.getElementById('step2Quantity').value;
+            }
+            
+            // Show next step or complete workflow
+            if (stepNumber < 2) {
+                testShowStep(stepNumber + 1);
+                alert(`Step ${stepNumber} completed. Continue with Step ${stepNumber + 1}.`);
+            } else {
+                // Workflow complete
+                testCompleteWorkflow();
+            }
+        }
+        
+        function testCompleteWorkflow() {
+            console.log('Workflow completed with data:', workflowData);
+            
+            // Hide all forms
+            for (let i = 1; i <= 2; i++) {
+                document.getElementById(`step${i}Form`).style.display = 'none';
+            }
+            document.getElementById('currentStepDisplay').style.display = 'none';
+            
+            // Show completion message
+            document.getElementById('workflowComplete').style.display = 'block';
+            
+            alert('Workflow completed successfully! Order has been created.');
+        }
+        
+        function testResetWorkflow() {
+            // Reset everything
+            currentWorkflowStep = 0;
+            workflowData = {};
+            
+            // Hide workflow container
+            document.getElementById('workflowFormsContainer').style.display = 'none';
+            document.getElementById('currentStepDisplay').style.display = 'none';
+            document.getElementById('workflowComplete').style.display = 'none';
+            
+            // Clear all form fields
+            document.querySelectorAll('input').forEach(input => input.value = '');
+        }
+    </script>
+</body>
+</html>

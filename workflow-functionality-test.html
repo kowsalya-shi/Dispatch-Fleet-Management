@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Functionality Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2><i class="fas fa-test-tube"></i> Fleet Management Workflow Test</h2>
+        
+        <div class="alert alert-info">
+            <h5>Test Instructions:</h5>
+            <ol>
+                <li>Click "Start Manual Dispatch" button</li>
+                <li>Verify that Step 1 form appears</li>
+                <li>Fill in required fields and click "Complete" button</li>
+                <li>Verify that Step 2 form appears</li>
+                <li>Continue through all 8 steps</li>
+                <li>Verify workflow completion message</li>
+            </ol>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-shipping-fast"></i> Manual Dispatch Workflow</h5>
+                        <div>
+                            <button type="button" class="btn btn-success" onclick="startManualWorkflow()">
+                                <i class="fas fa-play"></i> Start Manual Dispatch
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetWorkflow()">
+                                <i class="fas fa-refresh"></i> Reset Workflow
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Manual Workflow Control:</strong> Click "Start Manual Dispatch" to begin the step-by-step form workflow.
+                        </div>
+                        
+                        <!-- Current Step Display -->
+                        <div id="currentStepDisplay" class="alert alert-primary" style="display: none;">
+                            <h6 id="currentStepTitle">Current Step</h6>
+                            <p id="currentStepDescription">Step description</p>
+                        </div>
+                        
+                        <!-- Workflow Forms Container -->
+                        <div id="workflowFormsContainer" style="display: none;">
+                            
+                            <!-- Step 1: Sales Order Form -->
+                            <div id="step1Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5><i class="fas fa-shopping-cart"></i> Step 1: Sales Order</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="salesOrderForm">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Customer Name *</label>
+                                                        <input type="text" class="form-control" id="step1CustomerName" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Customer Phone *</label>
+                                                        <input type="tel" class="form-control" id="step1CustomerPhone" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-primary" onclick="completeStep(1)">
+                                                <i class="fas fa-arrow-right"></i> Complete Sales Order & Continue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2: Warehouse Form -->
+                            <div id="step2Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-secondary">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h5><i class="fas fa-warehouse"></i> Step 2: Warehouse</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Material Type *</label>
+                                                        <input type="text" class="form-control" id="step2MaterialType" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Quantity *</label>
+                                                        <input type="number" class="form-control" id="step2Quantity" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary" onclick="completeStep(2)">
+                                                <i class="fas fa-arrow-right"></i> Complete Warehouse & Continue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3: Invoice Form -->
+                            <div id="step3Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h5><i class="fas fa-file-invoice"></i> Step 3: Invoice</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Total Amount *</label>
+                                                        <input type="number" class="form-control" id="step3Amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Payment Terms *</label>
+                                                        <select class="form-control" id="step3PaymentTerms" required>
+                                                            <option value="">Select Terms</option>
+                                                            <option value="cash">Cash</option>
+                                                            <option value="credit">Credit</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-info" onclick="completeStep(3)">
+                                                <i class="fas fa-arrow-right"></i> Complete Invoice & Continue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 4: Vehicle Assignment Form -->
+                            <div id="step4Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-warning">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h5><i class="fas fa-truck"></i> Step 4: Vehicle Assignment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Vehicle *</label>
+                                                        <select class="form-control" id="step4Vehicle" required>
+                                                            <option value="">Select Vehicle</option>
+                                                            <option value="TN01AB1234">TN01AB1234 - Truck</option>
+                                                            <option value="TN02CD5678">TN02CD5678 - Van</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Driver *</label>
+                                                        <select class="form-control" id="step4Driver" required>
+                                                            <option value="">Select Driver</option>
+                                                            <option value="D001">John Doe</option>
+                                                            <option value="D002">Jane Smith</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-warning" onclick="completeStep(4)">
+                                                <i class="fas fa-arrow-right"></i> Complete Assignment & Continue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 5: Dispatch Form -->
+                            <div id="step5Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h5><i class="fas fa-shipping-fast"></i> Step 5: Dispatch</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="form-label">Dispatch Instructions *</label>
+                                                <textarea class="form-control" id="step5Instructions" rows="3" required></textarea>
+                                            </div>
+                                            <button type="button" class="btn btn-success mt-3" onclick="completeStep(5)">
+                                                <i class="fas fa-arrow-right"></i> Complete Dispatch & Continue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 6: Tracker Form -->
+                            <div id="step6Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5><i class="fas fa-map-marker-alt"></i> Step 6: Tracker</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="form-label">Tracking ID *</label>
+                                                <input type="text" class="form-control" id="step6TrackingId" required>
+                                            </div>
+                                            <button type="button" class="btn btn-primary" onclick="completeStep(6)">
+                                                <i class="fas fa-arrow-right"></i> Complete Tracking & Continue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 7: Delivered Form -->
+                            <div id="step7Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h5><i class="fas fa-check-circle"></i> Step 7: Delivered</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="form-label">Delivery Status *</label>
+                                                <select class="form-control" id="step7Status" required>
+                                                    <option value="">Select Status</option>
+                                                    <option value="delivered">Delivered</option>
+                                                    <option value="partial">Partial Delivery</option>
+                                                </select>
+                                            </div>
+                                            <button type="button" class="btn btn-success" onclick="completeStep(7)">
+                                                <i class="fas fa-arrow-right"></i> Complete Delivery & Continue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 8: Sign-off Form -->
+                            <div id="step8Form" class="workflow-step-form" style="display: none;">
+                                <div class="card border-dark">
+                                    <div class="card-header bg-dark text-white">
+                                        <h5><i class="fas fa-signature"></i> Step 8: Sign-off</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="form-label">Customer Signature *</label>
+                                                <input type="text" class="form-control" id="step8Signature" placeholder="Customer signature confirmation" required>
+                                            </div>
+                                            <button type="button" class="btn btn-dark" onclick="completeStep(8)">
+                                                <i class="fas fa-check-circle"></i> Complete Sign-off & Finish
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Workflow Complete -->
+                            <div id="workflowComplete" style="display: none;">
+                                <div class="alert alert-success">
+                                    <h5><i class="fas fa-check-circle"></i> Workflow Complete!</h5>
+                                    <p>All 8 steps have been completed successfully. The order has been processed through the complete dispatch workflow.</p>
+                                    <button class="btn btn-primary" onclick="resetWorkflow()">Start New Workflow</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-clipboard-check"></i> Test Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="testResults">
+                            <p>Click "Start Manual Dispatch" to begin testing...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentWorkflowStep = 0;
+        let workflowData = {};
+        let testResults = [];
+        
+        function logTest(message, success = true) {
+            testResults.push({
+                message: message,
+                success: success,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            updateTestResults();
+        }
+        
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = testResults.map(result => 
+                `<div class="alert alert-${result.success ? 'success' : 'danger'} py-2">
+                    <small>${result.timestamp}</small> - ${result.message}
+                </div>`
+            ).join('');
+        }
+        
+        function startManualWorkflow() {
+            logTest('Starting manual workflow...');
+            
+            // Reset workflow
+            currentWorkflowStep = 0;
+            workflowData = {};
+            
+            // Show workflow forms container
+            const container = document.getElementById('workflowFormsContainer');
+            if (container) {
+                container.style.display = 'block';
+                logTest('Workflow forms container displayed');
+            } else {
+                logTest('ERROR: Workflow forms container not found', false);
+                return;
+            }
+            
+            // Hide all forms first
+            for (let i = 1; i <= 8; i++) {
+                const form = document.getElementById(`step${i}Form`);
+                if (form) {
+                    form.style.display = 'none';
+                } else {
+                    logTest(`ERROR: Step ${i} form not found`, false);
+                }
+            }
+            
+            const completeDiv = document.getElementById('workflowComplete');
+            if (completeDiv) {
+                completeDiv.style.display = 'none';
+            }
+            
+            // Show first step
+            showStep(1);
+            
+            logTest('Manual workflow started successfully');
+        }
+        
+        function showStep(stepNumber) {
+            logTest(`Showing step ${stepNumber}`);
+            currentWorkflowStep = stepNumber;
+            
+            // Hide all forms
+            for (let i = 1; i <= 8; i++) {
+                const form = document.getElementById(`step${i}Form`);
+                if (form) {
+                    form.style.display = 'none';
+                }
+            }
+            
+            // Show current step form
+            const currentForm = document.getElementById(`step${stepNumber}Form`);
+            if (currentForm) {
+                currentForm.style.display = 'block';
+                logTest(`Step ${stepNumber} form displayed successfully`);
+            } else {
+                logTest(`ERROR: Step ${stepNumber} form not found`, false);
+                return;
+            }
+            
+            // Update current step display
+            const stepTitles = {
+                1: 'Sales Order - Customer Information',
+                2: 'Warehouse - Material & Pickup Details',
+                3: 'Invoice - Pricing & Delivery Information',
+                4: 'Vehicle & Driver Assignment',
+                5: 'Dispatch - Instructions & Notifications',
+                6: 'Tracker - Live Tracking Setup',
+                7: 'Delivered - Delivery Confirmation',
+                8: 'Sign-off - Customer Signature & Feedback'
+            };
+            
+            const stepDescriptions = {
+                1: 'Enter customer details and order priority',
+                2: 'Specify pickup location, material type and quantity',
+                3: 'Set delivery location, pricing and payment terms',
+                4: 'Assign vehicle, driver and schedule timing',
+                5: 'Add dispatch instructions and notification preferences',
+                6: 'Set up live tracking and monitor progress',
+                7: 'Confirm delivery details and condition of goods',
+                8: 'Capture customer signature and final feedback'
+            };
+            
+            const displayDiv = document.getElementById('currentStepDisplay');
+            const titleDiv = document.getElementById('currentStepTitle');
+            const descDiv = document.getElementById('currentStepDescription');
+            
+            if (displayDiv && titleDiv && descDiv) {
+                displayDiv.style.display = 'block';
+                titleDiv.textContent = `Step ${stepNumber}: ${stepTitles[stepNumber]}`;
+                descDiv.textContent = stepDescriptions[stepNumber];
+                logTest(`Step ${stepNumber} display updated`);
+            } else {
+                logTest('ERROR: Step display elements not found', false);
+            }
+        }
+        
+        function completeStep(stepNumber) {
+            logTest(`Attempting to complete step ${stepNumber}`);
+            
+            // Validate current step form
+            if (!validateStepForm(stepNumber)) {
+                logTest(`Step ${stepNumber} validation failed - missing required fields`, false);
+                alert('Please fill in all required fields before continuing.');
+                return;
+            }
+            
+            logTest(`Step ${stepNumber} validation passed`);
+            
+            // Save step data
+            saveStepData(stepNumber);
+            
+            // Show next step or complete workflow
+            if (stepNumber < 8) {
+                showStep(stepNumber + 1);
+                logTest(`Step ${stepNumber} completed. Moving to step ${stepNumber + 1}`);
+            } else {
+                // Workflow complete
+                completeWorkflow();
+                logTest('All 8 steps completed - workflow finished');
+            }
+        }
+        
+        function validateStepForm(stepNumber) {
+            const form = document.getElementById(`step${stepNumber}Form`).querySelector('form');
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            for (let field of requiredFields) {
+                if (!field.value.trim()) {
+                    field.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        function saveStepData(stepNumber) {
+            // Save form data to workflowData object
+            const form = document.getElementById(`step${stepNumber}Form`).querySelector('form');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            
+            inputs.forEach(input => {
+                if (input.value) {
+                    workflowData[input.id] = input.value;
+                }
+            });
+            
+            logTest(`Step ${stepNumber} data saved`);
+        }
+        
+        function completeWorkflow() {
+            // Hide all forms
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById(`step${i}Form`).style.display = 'none';
+            }
+            document.getElementById('currentStepDisplay').style.display = 'none';
+            
+            // Show completion message
+            document.getElementById('workflowComplete').style.display = 'block';
+            
+            logTest('Workflow completed successfully! All forms processed.');
+            logTest(`Total data collected: ${Object.keys(workflowData).length} fields`);
+        }
+        
+        function resetWorkflow() {
+            // Reset everything
+            currentWorkflowStep = 0;
+            workflowData = {};
+            testResults = [];
+            
+            // Hide workflow container
+            document.getElementById('workflowFormsContainer').style.display = 'none';
+            document.getElementById('currentStepDisplay').style.display = 'none';
+            document.getElementById('workflowComplete').style.display = 'none';
+            
+            // Clear all form fields
+            document.querySelectorAll('input, select, textarea').forEach(field => field.value = '');
+            
+            // Clear test results
+            document.getElementById('testResults').innerHTML = '<p>Click "Start Manual Dispatch" to begin testing...</p>';
+            
+            logTest('Workflow reset completed');
+        }
+    </script>
+</body>
+</html>

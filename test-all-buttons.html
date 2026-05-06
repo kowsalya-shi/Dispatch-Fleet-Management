@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Functionality Test - Fleet Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+        .test-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .btn-test {
+            margin: 5px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-working {
+            background: #28a745;
+            color: white;
+        }
+        .status-testing {
+            background: #ffc107;
+            color: black;
+        }
+        .test-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .test-result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+        .test-result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="header">
+            <h1><i class="fas fa-check-circle"></i> Button Functionality Test Suite</h1>
+            <p class="text-muted">Comprehensive testing for all Fleet Management System buttons</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalButtons">75+</div>
+                <div class="stat-label">Total Buttons</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="testedButtons">0</div>
+                <div class="stat-label">Tested</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="passedButtons">0</div>
+                <div class="stat-label">Passed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="failedButtons">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+        </div>
+
+        <!-- Vehicle Management Tests -->
+        <div class="test-section">
+            <h3><i class="fas fa-truck"></i> Vehicle Management Buttons</h3>
+            <button class="btn btn-primary btn-test" onclick="testButton('editVehicle', 'TN01AB1234')">
+                <i class="fas fa-edit"></i> Test Edit Vehicle
+            </button>
+            <button class="btn btn-info btn-test" onclick="testButton('viewVehicle', 'TN01AB1234')">
+                <i class="fas fa-eye"></i> Test View Vehicle
+            </button>
+            <button class="btn btn-danger btn-test" onclick="testButton('deleteVehicle', 'TN01AB1234')">
+                <i class="fas fa-trash"></i> Test Delete Vehicle
+            </button>
+            <button class="btn btn-secondary btn-test" onclick="testButton('exportVehicles')">
+                <i class="fas fa-download"></i> Test Export Vehicles
+            </button>
+            <button class="btn btn-success btn-test" onclick="testButton('refreshVehicles')">
+                <i class="fas fa-sync"></i> Test Refresh Vehicles
+            </button>
+            <button class="btn btn-warning btn-test" onclick="testButton('resetVehicleModal')">
+                <i class="fas fa-redo"></i> Test Reset Modal
+            </button>
+            <div id="result-vehicle" class="test-result"></div>
+        </div>
+
+        <!-- Driver Management Tests -->
+        <div class="test-section">
+            <h3><i class="fas fa-user-tie"></i> Driver Management Buttons</h3>
+            <button class="btn btn-primary btn-test" onclick="testButton('editDriver', 'DL123456789')">
+                <i class="fas fa-edit"></i> Test Edit Driver
+            </button>
+            <button class="btn btn-info btn-test" onclick="testButton('viewDriver', 'DL123456789')">
+                <i class="fas fa-eye"></i> Test View Driver
+            </button>
+            <button class="btn btn-danger btn-test" onclick="testButton('deleteDriver', 'DL123456789')">
+                <i class="fas fa-trash"></i> Test Delete Driver
+            </button>
+            <button class="btn btn-secondary btn-test" onclick="testButton('exportDrivers')">
+                <i class="fas fa-download"></i> Test Export Drivers
+            </button>
+            <button class="btn btn-success btn-test" onclick="testButton('refreshDrivers')">
+                <i class="fas fa-sync"></i> Test Refresh Drivers
+            </button>
+            <button class="btn btn-warning btn-test" onclick="testButton('resetDriverModal')">
+                <i class="fas fa-redo"></i> Test Reset Modal
+            </button>
+            <div id="result-driver" class="test-result"></div>
+        </div>
+
+        <!-- Route Management Tests -->
+        <div class="test-section">
+            <h3><i class="fas fa-map-marked-alt"></i> Route Management Buttons</h3>
+            <button class="btn btn-primary btn-test" onclick="testButton('editRoute', 'CHN-BLR-001')">
+                <i class="fas fa-edit"></i> Test Edit Route
+            </button>
+            <button class="btn btn-info btn-test" onclick="testButton('viewRoute', 'CHN-BLR-001')">
+                <i class="fas fa-eye"></i> Test View Route
+            </button>
+            <button class="btn btn-danger btn-test" onclick="testButton('deleteRoute', 'CHN-BLR-001')">
+                <i class="fas fa-trash"></i> Test Delete Route
+            </button>
+            <button class="btn btn-success btn-test" onclick="testButton('mapRoute', 'CHN-BLR-001')">
+                <i class="fas fa-map"></i> Test Map Route
+            </button>
+            <button class="btn btn-secondary btn-test" onclick="testButton('exportRoutes')">
+                <i class="fas fa-download"></i> Test Export Routes
+            </button>
+            <button class="btn btn-warning btn-test" onclick="testButton('resetRouteModal')">
+                <i class="fas fa-redo"></i> Test Reset Modal
+            </button>
+            <div id="result-route" class="test-result"></div>
+        </div>
+
+        <!-- Order Management Tests -->
+        <div class="test-section">
+            <h3><i class="fas fa-shopping-cart"></i> Order Management Buttons (NEW)</h3>
+            <button class="btn btn-primary btn-test" onclick="testButton('editOrder', 'ORD001')">
+                <i class="fas fa-edit"></i> Test Edit Order
+            </button>
+            <button class="btn btn-info btn-test" onclick="testButton('viewOrderDetails', 'ORD001')">
+                <i class="fas fa-eye"></i> Test View Order
+            </button>
+            <button class="btn btn-danger btn-test" onclick="testButton('deleteOrder', 'ORD001')">
+                <i class="fas fa-trash"></i> Test Delete Order
+            </button>
+            <button class="btn btn-success btn-test" onclick="testButton('processOrderWorkflow', 'ORD001')">
+                <i class="fas fa-play"></i> Test Process Order
+            </button>
+            <button class="btn btn-warning btn-test" onclick="testButton('trackOrderStatus', 'ORD001')">
+                <i class="fas fa-map-marker-alt"></i> Test Track Order
+            </button>
+            <button class="btn btn-secondary btn-test" onclick="testButton('exportOrders')">
+                <i class="fas fa-download"></i> Test Export Orders
+            </button>
+            <div id="result-order" class="test-result"></div>
+        </div>
+
+        <!-- Trip Management Tests -->
+        <div class="test-section">
+            <h3><i class="fas fa-route"></i> Trip Management Buttons (NEW)</h3>
+            <button class="btn btn-info btn-test" onclick="testButton('viewTrip', 'TRP001')">
+                <i class="fas fa-eye"></i> Test View Trip
+            </button>
+            <button class="btn btn-primary btn-test" onclick="testButton('editTrip', 'TRP001')">
+                <i class="fas fa-edit"></i> Test Edit Trip
+            </button>
+            <button class="btn btn-success btn-test" onclick="testButton('trackTrip', 'TRP001')">
+                <i class="fas fa-map-marker-alt"></i> Test Track Trip
+            </button>
+            <button class="btn btn-danger btn-test" onclick="testButton('cancelTrip', 'TRP001')">
+                <i class="fas fa-times"></i> Test Cancel Trip
+            </button>
+            <button class="btn btn-warning btn-test" onclick="testButton('resetTripModal')">
+                <i class="fas fa-redo"></i> Test Reset Modal
+            </button>
+            <div id="result-trip" class="test-result"></div>
+        </div>
+
+        <!-- Document Management Tests -->
+        <div class="test-section">
+            <h3><i class="fas fa-file-alt"></i> Document Management Buttons (NEW)</h3>
+            <button class="btn btn-primary btn-test" onclick="testButton('uploadDocument', 'Insurance')">
+                <i class="fas fa-upload"></i> Test Upload Document
+            </button>
+            <button class="btn btn-info btn-test" onclick="testButton('viewDocument', 'DOC001', 'Insurance Policy')">
+                <i class="fas fa-eye"></i> Test View Document
+            </button>
+            <button class="btn btn-warning btn-test" onclick="testButton('renewDocument', 'DOC001', 'Insurance Policy')">
+                <i class="fas fa-sync"></i> Test Renew Document
+            </button>
+            <button class="btn btn-danger btn-test" onclick="testButton('deleteDocument', 'DOC001', 'Insurance Policy')">
+                <i class="fas fa-trash"></i> Test Delete Document
+            </button>
+            <div id="result-document" class="test-result"></div>
+        </div>
+
+        <!-- Utility Functions Tests -->
+        <div class="test-section">
+            <h3><i class="fas fa-tools"></i> Utility Functions</h3>
+            <button class="btn btn-primary btn-test" onclick="testButton('openDynamicDispatch')">
+                <i class="fas fa-shipping-fast"></i> Test Open Dispatch App
+            </button>
+            <button class="btn btn-info btn-test" onclick="testButton('openMobileApp')">
+                <i class="fas fa-mobile-alt"></i> Test Open Mobile App
+            </button>
+            <button class="btn btn-success btn-test" onclick="testButton('openWhatsAppPanel')">
+                <i class="fab fa-whatsapp"></i> Test WhatsApp Panel
+            </button>
+            <button class="btn btn-warning btn-test" onclick="testButton('openEmailPanel')">
+                <i class="fas fa-envelope"></i> Test Email Panel
+            </button>
+            <div id="result-utility" class="test-result"></div>
+        </div>
+
+        <!-- Test All Button -->
+        <div class="text-center mt-4">
+            <button class="btn btn-lg btn-success" onclick="testAllButtons()">
+                <i class="fas fa-play-circle"></i> Run All Tests
+            </button>
+            <button class="btn btn-lg btn-secondary" onclick="resetTests()">
+                <i class="fas fa-redo"></i> Reset Tests
+            </button>
+        </div>
+    </div>
+
+    <!-- Include all necessary scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script src="button-implementations.js"></script>
+
+    <script>
+        let testedCount = 0;
+        let passedCount = 0;
+        let failedCount = 0;
+
+        function testButton(functionName, ...args) {
+            const category = getCategoryFromFunction(functionName);
+            const resultDiv = document.getElementById(`result-${category}`);
+            
+            try {
+                // Check if function exists
+                if (typeof window[functionName] !== 'function') {
+                    throw new Error(`Function ${functionName} is not defined`);
+                }
+                
+                // Call the function
+                window[functionName](...args);
+                
+                // Show success
+                resultDiv.className = 'test-result success';
+                resultDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <strong>SUCCESS:</strong> ${functionName}(${args.join(', ')}) executed successfully!
+                `;
+                
+                testedCount++;
+                passedCount++;
+                updateStats();
+                
+                // Auto-hide success message after 3 seconds
+                setTimeout(() => {
+                    resultDiv.style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                // Show error
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `
+                    <i class="fas fa-times-circle"></i>
+                    <strong>ERROR:</strong> ${functionName}(${args.join(', ')}) failed!<br>
+                    <small>${error.message}</small>
+                `;
+                
+                testedCount++;
+                failedCount++;
+                updateStats();
+            }
+        }
+
+        function getCategoryFromFunction(functionName) {
+            if (functionName.includes('Vehicle')) return 'vehicle';
+            if (functionName.includes('Driver')) return 'driver';
+            if (functionName.includes('Route')) return 'route';
+            if (functionName.includes('Order')) return 'order';
+            if (functionName.includes('Trip')) return 'trip';
+            if (functionName.includes('Document')) return 'document';
+            return 'utility';
+        }
+
+        function updateStats() {
+            document.getElementById('testedButtons').textContent = testedCount;
+            document.getElementById('passedButtons').textContent = passedCount;
+            document.getElementById('failedButtons').textContent = failedCount;
+        }
+
+        function testAllButtons() {
+            if (!confirm('This will test all buttons sequentially. Continue?')) return;
+            
+            resetTests();
+            
+            // Test all buttons with a delay between each
+            const tests = [
+                // Vehicle tests
+                () => testButton('editVehicle', 'TN01AB1234'),
+                () => testButton('viewVehicle', 'TN01AB1234'),
+                () => testButton('exportVehicles'),
+                () => testButton('refreshVehicles'),
+                () => testButton('resetVehicleModal'),
+                
+                // Driver tests
+                () => testButton('editDriver', 'DL123456789'),
+                () => testButton('viewDriver', 'DL123456789'),
+                () => testButton('exportDrivers'),
+                () => testButton('refreshDrivers'),
+                () => testButton('resetDriverModal'),
+                
+                // Route tests
+                () => testButton('editRoute', 'CHN-BLR-001'),
+                () => testButton('viewRoute', 'CHN-BLR-001'),
+                () => testButton('exportRoutes'),
+                () => testButton('resetRouteModal'),
+                
+                // Order tests
+                () => testButton('editOrder', 'ORD001'),
+                () => testButton('viewOrderDetails', 'ORD001'),
+                () => testButton('exportOrders'),
+                
+                // Trip tests
+                () => testButton('viewTrip', 'TRP001'),
+                () => testButton('editTrip', 'TRP001'),
+                () => testButton('resetTripModal'),
+                
+                // Document tests
+                () => testButton('uploadDocument', 'Insurance'),
+                () => testButton('viewDocument', 'DOC001', 'Insurance Policy'),
+                
+                // Utility tests
+                () => testButton('openWhatsAppPanel'),
+                () => testButton('openEmailPanel')
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index < tests.length) {
+                    tests[index]();
+                    index++;
+                } else {
+                    clearInterval(interval);
+                    alert(`Testing Complete!\n\nTotal: ${testedCount}\nPassed: ${passedCount}\nFailed: ${failedCount}`);
+                }
+            }, 1000);
+        }
+
+        function resetTests() {
+            testedCount = 0;
+            passedCount = 0;
+            failedCount = 0;
+            updateStats();
+            
+            // Hide all result divs
+            document.querySelectorAll('.test-result').forEach(div => {
+                div.style.display = 'none';
+            });
+        }
+
+        // Initialize
+        console.log('Button Test Suite Loaded');
+        console.log('Available functions:', Object.keys(window).filter(key => typeof window[key] === 'function').length);
+    </script>
+</body>
+</html>

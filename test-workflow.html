@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Workflow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Test Manual Workflow</h2>
+        <button class="btn btn-success" onclick="testStartWorkflow()">Start Manual Dispatch</button>
+        
+        <div id="workflowFormsContainer" style="display: none;">
+            <div class="alert alert-primary mt-3">
+                <h6 id="currentStepTitle">Current Step</h6>
+                <p id="currentStepDescription">Step description</p>
+            </div>
+            
+            <!-- Step 1 Form -->
+            <div id="step1Form" class="workflow-step-form" style="display: none;">
+                <div class="card border-primary mt-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Step 1: Sales Order</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Customer Name</label>
+                                <input type="text" class="form-control" id="customerName" required>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">Next Step</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 2 Form -->
+            <div id="step2Form" class="workflow-step-form" style="display: none;">
+                <div class="card border-secondary mt-3">
+                    <div class="card-header bg-secondary text-white">
+                        <h5>Step 2: Warehouse</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Material Type</label>
+                                <input type="text" class="form-control" id="materialType" required>
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="nextStep()">Next Step</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="workflowComplete" style="display: none;">
+                <div class="alert alert-success mt-3">
+                    <h5>Workflow Complete!</h5>
+                    <p>All steps have been completed successfully.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentWorkflowStep = 0;
+        
+        function testStartWorkflow() {
+            currentWorkflowStep = 0;
+            document.getElementById('workflowFormsContainer').style.display = 'block';
+            
+            // Hide all forms
+            document.getElementById('step1Form').style.display = 'none';
+            document.getElementById('step2Form').style.display = 'none';
+            document.getElementById('workflowComplete').style.display = 'none';
+            
+            showStep(1);
+        }
+        
+        function showStep(stepNumber) {
+            currentWorkflowStep = stepNumber;
+            
+            // Hide all forms
+            document.getElementById('step1Form').style.display = 'none';
+            document.getElementById('step2Form').style.display = 'none';
+            
+            // Show current step
+            if (stepNumber <= 2) {
+                document.getElementById(`step${stepNumber}Form`).style.display = 'block';
+                
+                const titles = {
+                    1: 'Sales Order - Customer Information',
+                    2: 'Warehouse - Material Details'
+                };
+                
+                document.getElementById('currentStepTitle').textContent = `Step ${stepNumber}: ${titles[stepNumber]}`;
+                document.getElementById('currentStepDescription').textContent = `Complete step ${stepNumber} information`;
+            }
+        }
+        
+        function nextStep() {
+            if (currentWorkflowStep < 2) {
+                showStep(currentWorkflowStep + 1);
+            } else {
+                // Show completion
+                document.getElementById('step1Form').style.display = 'none';
+                document.getElementById('step2Form').style.display = 'none';
+                document.getElementById('workflowComplete').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

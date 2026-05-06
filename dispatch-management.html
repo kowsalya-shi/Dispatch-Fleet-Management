@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispatch Management System - Real-Time Operations</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="dispatch-styles.css">
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="dispatch-header">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center py-2">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link sidebar-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars text-white"></i>
+                    </button>
+                    <h4 class="mb-0 ms-3 text-white">
+                        <i class="fas fa-shipping-fast"></i> Dispatch Management System
+                    </h4>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="real-time-indicator me-3">
+                        <span class="badge bg-success pulse">
+                            <i class="fas fa-circle"></i> LIVE
+                        </span>
+                    </div>
+                    <div class="me-3 text-white">
+                        <i class="fas fa-clock"></i>
+                        <span id="currentTime">--:--:--</span>
+                    </div>
+                    <div class="me-3">
+                        <button class="btn btn-success btn-sm" onclick="openWhatsAppPanel()">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                    </div>
+                    <div class="me-2">
+                        <button class="btn btn-primary btn-sm" onclick="openEmailPanel()">
+                            <i class="fas fa-envelope"></i> Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav class="dispatch-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h5><i class="fas fa-shipping-fast"></i> Dispatch Control</h5>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dispatch Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#orders" onclick="showSection('orders')">
+                    <i class="fas fa-shopping-cart"></i> Order Management
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#workflow" onclick="showSection('workflow')">
+                    <i class="fas fa-route"></i> 8-Step Workflow
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#vehicles" onclick="showSection('vehicles')">
+                    <i class="fas fa-truck"></i> Vehicle Assignment
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#drivers" onclick="showSection('drivers')">
+                    <i class="fas fa-user-tie"></i> Driver Assignment
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#routing" onclick="showSection('routing')">
+                    <i class="fas fa-map-marked-alt"></i> Route Planning
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#scheduling" onclick="showSection('scheduling')">
+                    <i class="fas fa-calendar-alt"></i> Scheduling
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#tracking" onclick="showSection('tracking')">
+                    <i class="fas fa-map-marker-alt"></i> Real-Time GPS Tracking
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#shipment" onclick="showSection('shipment')">
+                    <i class="fas fa-box"></i> Shipment Tracking
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#communication" onclick="showSection('communication')">
+                    <i class="fas fa-phone"></i> Communication
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#pod" onclick="showSection('pod')">
+                    <i class="fas fa-signature"></i> Proof of Delivery
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#exceptions" onclick="showSection('exceptions')">
+                    <i class="fas fa-exclamation-triangle"></i> Exception Handling
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#reports" onclick="showSection('reports')">
+                    <i class="fas fa-chart-bar"></i> Reports & Analytics
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dispatch Dashboard</h2>
+                    <p class="text-muted">Real-time dispatch operations control center</p>
+                </div>
+            </div>
+            
+            <!-- Real-Time KPI Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white kpi-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="totalOrders">12</h4>
+                                    <p class="mb-0">Total Orders</p>
+                                    <small class="opacity-75">Today</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-shopping-cart fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white kpi-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="activeDeliveries">5</h4>
+                                    <p class="mb-0">Active Deliveries</p>
+                                    <small class="opacity-75">In Transit</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-truck fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white kpi-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="completedDeliveries">8</h4>
+                                    <p class="mb-0">Completed</p>
+                                    <small class="opacity-75">Today</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white kpi-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="delayedOrders">2</h4>
+                                    <p class="mb-0">Delayed</p>
+                                    <small class="opacity-75">Needs Attention</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary w-100 mb-2" onclick="startNewWorkflow()">
+                                        <i class="fas fa-plus"></i> Start New Order
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-warning w-100 mb-2" onclick="showSection('tracking')">
+                                        <i class="fas fa-map"></i> View Live Map
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-success w-100 mb-2" onclick="showSection('pod')">
+                                        <i class="fas fa-signature"></i> Capture POD
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-info w-100 mb-2" onclick="showSection('reports')">
+                                        <i class="fas fa-chart-line"></i> View Reports
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8-Step Workflow Section -->
+        <div id="workflow" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-route"></i> 8-Step Dispatch Workflow</h2>
+                    <p class="text-muted">Complete dispatch process from order to delivery</p>
+                </div>
+            </div>
+
+            <!-- Workflow Progress -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-tasks"></i> Workflow Progress</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="workflow-steps">
+                                <div class="step active" data-step="1">
+                                    <div class="step-icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="step-label">Sales Order</div>
+                                </div>
+                                <div class="step pending" data-step="2">
+                                    <div class="step-icon">
+                                        <i class="fas fa-warehouse"></i>
+                                    </div>
+                                    <div class="step-label">Warehouse</div>
+                                </div>
+                                <div class="step pending" data-step="3">
+                                    <div class="step-icon">
+                                        <i class="fas fa-file-invoice"></i>
+                                    </div>
+                                    <div class="step-label">Invoice</div>
+                                </div>
+                                <div class="step pending" data-step="4">
+                                    <div class="step-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div class="step-label">Vehicle & Driver</div>
+                                </div>
+                                <div class="step pending" data-step="5">
+                                    <div class="step-icon">
+                                        <i class="fas fa-shipping-fast"></i>
+                                    </div>
+                                    <div class="step-label">Dispatch</div>
+                                </div>
+                                <div class="step pending" data-step="6">
+                                    <div class="step-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="step-label">Tracker</div>
+                                </div>
+                                <div class="step pending" data-step="7">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="step-label">Delivered</div>
+                                </div>
+                                <div class="step pending" data-step="8">
+                                    <div class="step-icon">
+                                        <i class="fas fa-signature"></i>
+                                    </div>
+                                    <div class="step-label">Sign-off</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Controls -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-play"></i> Workflow Controls</h5>
+                            <div>
+                                <button type="button" class="btn btn-success" onclick="startWorkflow()">
+                                    <i class="fas fa-play"></i> Start New Workflow
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="resetWorkflow()">
+                                    <i class="fas fa-refresh"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Workflow Guide:</strong> Complete each step in sequence. Each step must be validated before proceeding to the next.
+                            </div>
+                            
+                            <!-- Current Step Display -->
+                            <div id="currentStepDisplay" class="alert alert-primary" style="display: none;">
+                                <h6 id="currentStepTitle">Current Step</h6>
+                                <p id="currentStepDescription">Step description</p>
+                            </div>
+                            
+                            <!-- Workflow Forms Container -->
+                            <div id="workflowFormsContainer" style="display: none;">
+                                <!-- Step forms will be dynamically loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other sections placeholder -->
+        <div id="orders" class="content-section" style="display: none;">
+            <h2>Order Management - Coming Soon</h2>
+        </div>
+        
+        <div id="tracking" class="content-section" style="display: none;">
+            <h2>Real-Time GPS Tracking - Coming Soon</h2>
+        </div>
+        
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Dispatch Management JS -->
+    <script src="dispatch-script.js"></script>
+</body>
+</html>
+        <!-- Order Management Section -->
+        <div id="orders" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-shopping-cart"></i> Order Management</h2>
+                    <p class="text-muted">Create and manage delivery orders</p>
+                </div>
+            </div>
+
+            <!-- Order Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="ordersPending">4</h4>
+                                    <p class="mb-0">Pending Orders</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="ordersDispatched">5</h4>
+                                    <p class="mb-0">Dispatched</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-shipping-fast fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="ordersDelivered">8</h4>
+                                    <p class="mb-0">Delivered</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="ordersDelayed">2</h4>
+                                    <p class="mb-0">Delayed</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create New Order -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-plus"></i> Create New Order</h5>
+                            <button type="button" class="btn btn-primary" onclick="startNewWorkflow()">
+                                <i class="fas fa-plus"></i> Start 8-Step Workflow
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>8-Step Dispatch Workflow:</strong> Sales Order → Warehouse → Invoice → Vehicle & Driver → Dispatch → Tracker → Delivered → Sign-off
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-list"></i> All Orders</h5>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="orderStatusFilter" onchange="filterOrders()">
+                                    <option value="all">All Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="dispatched">Dispatched</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="delayed">Delayed</option>
+                                </select>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="refreshOrders()">
+                                    <i class="fas fa-sync"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Delivery Address</th>
+                                            <th>Status</th>
+                                            <th>Priority</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ordersTable">
+                                        <tr>
+                                            <td><strong>ORD001</strong></td>
+                                            <td>ABC Corporation</td>
+                                            <td>Electronic City, Bangalore</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td><span class="badge bg-danger">Urgent</span></td>
+                                            <td>2024-03-31</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-success">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ORD002</strong></td>
+                                            <td>XYZ Industries</td>
+                                            <td>Whitefield, Bangalore</td>
+                                            <td><span class="badge bg-info">Dispatched</span></td>
+                                            <td><span class="badge bg-warning">High</span></td>
+                                            <td>2024-03-30</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-phone"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ORD003</strong></td>
+                                            <td>PQR Logistics</td>
+                                            <td>Koramangala, Bangalore</td>
+                                            <td><span class="badge bg-success">Delivered</span></td>
+                                            <td><span class="badge bg-secondary">Normal</span></td>
+                                            <td>2024-03-29</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-success">
+                                                    <i class="fas fa-file-invoice"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-signature"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-Time GPS Tracking Section -->
+        <div id="tracking" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-map-marker-alt"></i> Real-Time GPS Tracking</h2>
+                    <p class="text-muted">Live vehicle tracking and route monitoring</p>
+                </div>
+            </div>
+
+            <!-- Tracking Controls -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-satellite"></i> Live Tracking Controls</h5>
+                            <div>
+                                <span class="badge bg-success pulse me-2">
+                                    <i class="fas fa-circle"></i> GPS ACTIVE
+                                </span>
+                                <button class="btn btn-outline-primary btn-sm" onclick="centerAllVehicles()">
+                                    <i class="fas fa-expand"></i> Center All
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="refreshTracking()">
+                                    <i class="fas fa-sync"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Map and Vehicle Status -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-map"></i> Live GPS Map</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="liveTrackingMap" style="height: 500px; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-truck"></i> Vehicle Status</h5>
+                        </div>
+                        <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                            <div id="vehicleStatusList">
+                                <!-- Vehicle status will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Assignment Section -->
+        <div id="vehicles" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-truck"></i> Vehicle Assignment</h2>
+                    <p class="text-muted">Assign vehicles based on availability, capacity, and location</p>
+                </div>
+            </div>
+
+            <!-- Vehicle Assignment Cards -->
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h6><i class="fas fa-truck"></i> KA01AB1234</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Type:</strong> Truck</p>
+                            <p><strong>Capacity:</strong> 5000 kg</p>
+                            <p><strong>Driver:</strong> Ravi Kumar</p>
+                            <p><strong>Status:</strong> <span class="badge bg-warning">In Transit</span></p>
+                            <p><strong>Location:</strong> Electronic City</p>
+                            <button class="btn btn-primary btn-sm w-100">
+                                <i class="fas fa-map-marker-alt"></i> Track Vehicle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6><i class="fas fa-truck"></i> KA02CD5678</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Type:</strong> Van</p>
+                            <p><strong>Capacity:</strong> 2000 kg</p>
+                            <p><strong>Driver:</strong> Suresh Babu</p>
+                            <p><strong>Status:</strong> <span class="badge bg-success">Available</span></p>
+                            <p><strong>Location:</strong> Whitefield</p>
+                            <button class="btn btn-success btn-sm w-100">
+                                <i class="fas fa-plus"></i> Assign Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h6><i class="fas fa-truck"></i> KA03EF9012</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Type:</strong> Truck</p>
+                            <p><strong>Capacity:</strong> 8000 kg</p>
+                            <p><strong>Driver:</strong> Manjunath</p>
+                            <p><strong>Status:</strong> <span class="badge bg-info">Loading</span></p>
+                            <p><strong>Location:</strong> Koramangala</p>
+                            <button class="btn btn-info btn-sm w-100">
+                                <i class="fas fa-clock"></i> Loading in Progress
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver Assignment Section -->
+        <div id="drivers" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><i class="fas fa-user-tie"></i> Driver Assignment</h2>
+                    <p class="text-muted">Assign drivers to vehicles and check availability</p>
+                </div>
+            </div>
+
+            <!-- Driver Cards -->
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h6><i class="fas fa-user"></i> Ravi Kumar</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>License:</strong> KA123456789</p>
+                            <p><strong>Experience:</strong> 5 years</p>
+                            <p><strong>Phone:</strong> +91 98765 11111</p>
+                            <p><strong>Status:</strong> <span class="badge bg-warning">On Duty</span></p>
+                            <p><strong>Vehicle:</strong> KA01AB1234</p>
+                            <button class="btn btn-primary btn-sm w-100">
+                                <i class="fas fa-phone"></i> Contact Driver
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h6><i class="fas fa-user"></i> Suresh Babu</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>License:</strong> KA987654321</p>
+                            <p><strong>Experience:</strong> 8 years</p>
+                            <p><strong>Phone:</strong> +91 98765 22222</p>
+                            <p><strong>Status:</strong> <span class="badge bg-success">Available</span></p>
+                            <p><strong>Vehicle:</strong> KA02CD5678</p>
+                            <button class="btn btn-success btn-sm w-100">
+                                <i class="fas fa-plus"></i> Assign Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h6><i class="fas fa-user"></i> Manjunath</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>License:</strong> KA456789123</p>
+                            <p><strong>Experience:</strong> 3 years</p>
+                            <p><strong>Phone:</strong> +91 98765 33333</p>
+                            <p><strong>Status:</strong> <span class="badge bg-info">Loading</span></p>
+                            <p><strong>Vehicle:</strong> KA03EF9012</p>
+                            <button class="btn btn-info btn-sm w-100">
+                                <i class="fas fa-clock"></i> Currently Loading
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Placeholder sections for other features -->
+        <div id="routing" class="content-section" style="display: none;">
+            <h2><i class="fas fa-map-marked-alt"></i> Route Planning</h2>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Route planning feature will be implemented with optimal path calculation and traffic avoidance.
+            </div>
+        </div>
+
+        <div id="scheduling" class="content-section" style="display: none;">
+            <h2><i class="fas fa-calendar-alt"></i> Scheduling</h2>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Scheduling feature will include delivery time planning and dispatch timing management.
+            </div>
+        </div>
+
+        <div id="shipment" class="content-section" style="display: none;">
+            <h2><i class="fas fa-box"></i> Shipment Tracking</h2>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Shipment tracking will monitor goods status: Packed → In Transit → Delivered.
+            </div>
+        </div>
+
+        <div id="communication" class="content-section" style="display: none;">
+            <h2><i class="fas fa-phone"></i> Communication</h2>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Communication center for contacting drivers and notifying customers via SMS/Call.
+            </div>
+        </div>
+
+        <div id="pod" class="content-section" style="display: none;">
+            <h2><i class="fas fa-signature"></i> Proof of Delivery</h2>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> POD system will capture signatures, photos, and OTP verification for delivery confirmation.
+            </div>
+        </div>
+
+        <div id="exceptions" class="content-section" style="display: none;">
+            <h2><i class="fas fa-exclamation-triangle"></i> Exception Handling</h2>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Exception handling for vehicle breakdown, delays, and wrong addresses.
+            </div>
+        </div>
+
+        <div id="reports" class="content-section" style="display: none;">
+            <h2><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Comprehensive reports on delivery performance, driver efficiency, fuel usage, and delay analysis.
+            </div>
+        </div>

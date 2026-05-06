@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Dispatch Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="dispatch-styles.css">
+    <!-- Chart.js for Dashboard Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet JS for Maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <!-- Authentication Check -->
+    <script>
+        // Check if user is logged in
+        function checkAuthentication() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const loginTime = localStorage.getItem('loginTime');
+            
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            // Check if session has expired (8 hours)
+            if (loginTime) {
+                const loginDate = new Date(loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginDate) / (1000 * 60 * 60);
+                
+                if (hoursDiff >= 8) {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('loginTime');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        // Run authentication check
+        if (!checkAuthentication()) {
+            document.documentElement.style.display = 'none';
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('loginTime');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link sidebar-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h4 class="mb-0 ms-3">
+                        <i class="fas fa-shipping-fast"></i> Dynamic Dispatch Management
+                    </h4>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        <span class="live-text">LIVE</span>
+                    </div>
+                    <div class="me-3">
+                        <span class="badge bg-danger notification-badge">5</span>
+                        <i class="fas fa-bell"></i> Alerts
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="window.open('index.html', '_blank')">
+                        <i class="fas fa-home"></i> Main System
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="profile-section">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="profile-info">
+                    <h5 id="dispatchCurrentUser">JOHN DOE</h5>
+                    <p>Dispatch Manager</p>
+                    <div class="status-indicator">
+                        <span class="status-dot online"></span>
+                        <span>Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="showDynamicSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> 
+                    <span>Dashboard</span>
+                    <div class="nav-indicator"></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('orders')">
+                    <i class="fas fa-shopping-cart"></i> 
+                    <span>Order Tracking</span>
+                    <div class="badge bg-warning ms-auto">3</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('vehicles')">
+                    <i class="fas fa-truck"></i> 
+                    <span>Vehicle & Driver</span>
+                    <div class="badge bg-success ms-auto">5</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('tracking')">
+                    <i class="fas fa-map-marker-alt"></i> 
+                    <span>Live Tracking</span>
+                    <div class="pulse-indicator"></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('routemap')">
+                    <i class="fas fa-route"></i> 
+                    <span>Route Map Tracking</span>
+                    <div class="badge bg-primary ms-auto">Live</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('pod')">
+                    <i class="fas fa-file-signature"></i> 
+                    <span>POD Management</span>
+                    <div class="badge bg-info ms-auto">2</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('trips')">
+                    <i class="fas fa-route"></i> 
+                    <span>Active Trips</span>
+                    <div class="badge bg-primary ms-auto">4</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('analytics')">
+                    <i class="fas fa-chart-bar"></i> 
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('materials')">
+                    <i class="fas fa-layer-group"></i> 
+                    <span>Material Master</span>
+                    <div class="badge bg-info ms-auto">3</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('warehouse')">
+                    <i class="fas fa-warehouse"></i> 
+                    <span>Warehouse Management</span>
+                    <div class="badge bg-primary ms-auto">3</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showDynamicSection('workflow')">
+                    <i class="fas fa-sitemap"></i> 
+                    <span>Dispatch Workflow</span>
+                    <div class="badge bg-success ms-auto">8-Step</div>
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Quick Actions -->
+        <div class="sidebar-footer">
+            <div class="quick-actions">
+                <h6>Quick Actions</h6>
+                <button class="btn btn-success btn-sm w-100 mb-2" onclick="createNewDispatch()">
+                    <i class="fas fa-plus"></i> New Dispatch
+                </button>
+                <button class="btn btn-warning btn-sm w-100 mb-2" onclick="emergencyAlert()">
+                    <i class="fas fa-exclamation-triangle"></i> Emergency
+                </button>
+                <button class="btn btn-info btn-sm w-100 mb-2" onclick="generateReport()">
+                    <i class="fas fa-file-alt"></i> Generate Report
+                </button>
+                <hr class="my-3" style="border-color: rgba(255,255,255,0.2);">
+                <button class="btn btn-outline-light btn-sm w-100" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Dynamic Content Container -->
+        <div id="dynamicContent">
+            <!-- Content will be loaded dynamically here -->
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading dispatch data...</p>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Dynamic Dispatch Script -->
+    <script src="dispatch-script.js"></script>
+    
+    <!-- Update user display -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+                const userElement = document.getElementById('dispatchCurrentUser');
+                if (userElement) {
+                    userElement.textContent = userId;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Management - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3AAFA9 0%, #2B7A78 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 48px;
+            color: #3AAFA9;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #17252A;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #17252A;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #DEF2F1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #3AAFA9;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #3AAFA9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #2B7A78;
+        }
+
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #155724;
+            margin-top: 10px;
+            padding: 10px;
+            background: #d4edda;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .credentials-hint {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            border-left: 4px solid #3AAFA9;
+        }
+
+        .credentials-hint h3 {
+            color: #17252A;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .credentials-hint p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🚛</div>
+        <h1>Fleet Management System</h1>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="userId">User ID:</label>
+                <input type="text" id="userId" name="userId" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">Login</button>
+        </form>
+        
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        
+        <div class="credentials-hint">
+            <h3>Login Credentials:</h3>
+            <p><strong>User ID:</strong> CRMAI@23</p>
+            <p><strong>Password:</strong> AI0023</p>
+        </div>
+    </div>
+
+    <script>
+        // Valid credentials
+        const VALID_USER_ID = 'CRMAI@23';
+        const VALID_PASSWORD = 'AI0023';
+
+        // Get form elements
+        const loginForm = document.getElementById('loginForm');
+        const userIdInput = document.getElementById('userId');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Handle form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userId = userIdInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // Hide previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Disable button during login
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            
+            // Simulate login delay
+            setTimeout(() => {
+                if (userId === VALID_USER_ID && password === VALID_PASSWORD) {
+                    // Success
+                    successMessage.textContent = 'Login successful! Redirecting...';
+                    successMessage.style.display = 'block';
+                    
+                    // Store login session
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userId', userId);
+                    localStorage.setItem('loginTime', new Date().toISOString());
+                    
+                    // Redirect to main page
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                    
+                } else {
+                    // Error
+                    errorMessage.textContent = 'Invalid User ID or Password. Please try again.';
+                    errorMessage.style.display = 'block';
+                    
+                    // Reset button
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login';
+                    
+                    // Clear password field
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            }, 1000);
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            const loginTime = new Date(localStorage.getItem('loginTime'));
+            const now = new Date();
+            const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+            
+            // Check if session is still valid (8 hours)
+            if (hoursDiff < 8) {
+                window.location.href = 'index.html';
+            } else {
+                // Clear expired session
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('loginTime');
+            }
+        }
+
+        // Auto-focus on user ID field
+        userIdInput.focus();
+
+        // Enter key navigation
+        userIdInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                passwordInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>

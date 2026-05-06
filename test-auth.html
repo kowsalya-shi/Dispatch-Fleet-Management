@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Test - Fleet Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3AAFA9;
+            --secondary-color: #2B7A78;
+            --accent-color: #17252A;
+            --light-color: #DEF2F1;
+        }
+
+        body {
+            background: linear-gradient(135deg, #3AAFA9 0%, #2B7A78 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-card {
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+
+        .btn-test {
+            margin: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="text-center mb-4">
+            <i class="fas fa-shield-alt text-primary"></i>
+            Authentication System Test
+        </h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-info-circle"></i> System Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="authStatus" class="status-card">
+                            <strong>Checking authentication status...</strong>
+                        </div>
+                        <div id="sessionInfo" class="status-card">
+                            <strong>Loading session information...</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-cogs"></i> Test Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-primary btn-test" onclick="testLogin()">
+                            <i class="fas fa-sign-in-alt"></i> Test Login
+                        </button>
+                        <button class="btn btn-warning btn-test" onclick="testLogout()">
+                            <i class="fas fa-sign-out-alt"></i> Test Logout
+                        </button>
+                        <button class="btn btn-info btn-test" onclick="checkSession()">
+                            <i class="fas fa-clock"></i> Check Session
+                        </button>
+                        <button class="btn btn-secondary btn-test" onclick="clearStorage()">
+                            <i class="fas fa-trash"></i> Clear Storage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-link"></i> Navigation Links</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="welcome.html" class="btn btn-outline-primary btn-test">
+                            <i class="fas fa-home"></i> Welcome Page
+                        </a>
+                        <a href="login.html" class="btn btn-outline-success btn-test">
+                            <i class="fas fa-sign-in-alt"></i> Login Page
+                        </a>
+                        <a href="index.html" class="btn btn-outline-warning btn-test">
+                            <i class="fas fa-truck"></i> Fleet System
+                        </a>
+                        <a href="dispatch-app.html" class="btn btn-outline-info btn-test">
+                            <i class="fas fa-shipping-fast"></i> Dispatch System
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5><i class="fas fa-key"></i> Login Credentials</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <strong>User ID:</strong> <code>CRMAI@23</code><br>
+                            <strong>Password:</strong> <code>AI0023</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test functions
+        function testLogin() {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userId', 'CRMAI@23');
+            localStorage.setItem('loginTime', new Date().toISOString());
+            updateStatus();
+            showAlert('Login simulation successful!', 'success');
+        }
+
+        function testLogout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('loginTime');
+            updateStatus();
+            showAlert('Logout simulation successful!', 'warning');
+        }
+
+        function checkSession() {
+            const loginTime = localStorage.getItem('loginTime');
+            if (loginTime) {
+                const loginDate = new Date(loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginDate) / (1000 * 60 * 60);
+                showAlert(`Session active for ${hoursDiff.toFixed(2)} hours`, 'info');
+            } else {
+                showAlert('No active session found', 'danger');
+            }
+            updateStatus();
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            updateStatus();
+            showAlert('Local storage cleared!', 'secondary');
+        }
+
+        function updateStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userId = localStorage.getItem('userId');
+            const loginTime = localStorage.getItem('loginTime');
+
+            // Update auth status
+            const authStatusEl = document.getElementById('authStatus');
+            if (isLoggedIn === 'true') {
+                authStatusEl.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> 
+                        <strong>Authenticated</strong><br>
+                        User: ${userId || 'Unknown'}
+                    </div>
+                `;
+            } else {
+                authStatusEl.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> 
+                        <strong>Not Authenticated</strong>
+                    </div>
+                `;
+            }
+
+            // Update session info
+            const sessionInfoEl = document.getElementById('sessionInfo');
+            if (loginTime) {
+                const loginDate = new Date(loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginDate) / (1000 * 60 * 60);
+                const isExpired = hoursDiff >= 8;
+
+                sessionInfoEl.innerHTML = `
+                    <div class="alert ${isExpired ? 'alert-warning' : 'alert-info'}">
+                        <i class="fas fa-clock"></i> 
+                        <strong>Session Info</strong><br>
+                        Login Time: ${loginDate.toLocaleString()}<br>
+                        Duration: ${hoursDiff.toFixed(2)} hours<br>
+                        Status: ${isExpired ? 'Expired' : 'Active'}
+                    </div>
+                `;
+            } else {
+                sessionInfoEl.innerHTML = `
+                    <div class="alert alert-secondary">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>No Session Data</strong>
+                    </div>
+                `;
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show mt-3" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            document.querySelector('.test-container').insertAdjacentHTML('beforeend', alertHtml);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus();
+            
+            // Auto-refresh status every 5 seconds
+            setInterval(updateStatus, 5000);
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
