@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Fleet Management System - Dispatch Management Application
 
 A comprehensive web-based Fleet Management System with real-time GPS tracking, dispatch management, and Power BI analytics integration.
@@ -256,3 +257,6 @@ The application includes several demo features to showcase functionality:
 ---
 
 **Built with ❤️ for efficient fleet management and dispatch operations**
+=======
+# Dispatch-Fleet-Management
+>>>>>>> a05091bbbdd60cb58a65704e0b87796bc36b930c
